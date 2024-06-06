@@ -54,16 +54,9 @@ public class VentanaEventos {
     private Usuario usuarioActual = null;
     private Admin admin = new Admin();
 
-    private JPanel panelEventos;
-    private JPanel panelAdmin;
-
     public VentanaEventos() {
 
         listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", 111));
-
-        panelEventos = (JPanel) registroPanel.getComponentAt(0);
-        panelAdmin = (JPanel) registroPanel.getComponentAt(3);
-
 
         irARegistroButton.addActionListener(new ActionListener() {
             @Override
@@ -83,7 +76,7 @@ public class VentanaEventos {
                 for (Usuario us : listaUsuarios){
                     if(us.getUsuario().equals(usuario) && us.getContra().equals(pass)){
                         encontrado = true;
-                        usuarioActual = us;
+//                        usuarioActual = us;
                         JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
                         inicioValor.setText("Bienvenido " + us.getUsuario());
                         textField1.setText("");
@@ -117,25 +110,36 @@ public class VentanaEventos {
         crearUsuarioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 String nombre = textField3.getText();
                 String usuario = textField4.getText();
                 String contra = textField5.getText();
                 String direccion = textField6.getText();
                 int telefono = Integer.parseInt(textField7.getText());
 
-                Usuario nuevoUsuario = new Usuario(contadorId++, usuario, nombre, contra, direccion, telefono);
-                listaUsuarios.add(nuevoUsuario);
+                boolean usuarioExistente = false;
+                for (Usuario user : listaUsuarios) {
+                    if (user.getUsuario().equals(usuario)) {
+                        usuarioExistente = true;
+                        break;
+                    }
+                }
 
-                textField3.setText("");
-                textField4.setText("");
-                textField5.setText("");
-                textField6.setText("");
-                textField7.setText("");
+                if (usuarioExistente) {
+                    JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema");
+                } else {
+                    Usuario nuevoUsuario = new Usuario(contadorId++, usuario, nombre, contra, direccion, telefono);
+                    listaUsuarios.add(nuevoUsuario);
+                    JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
 
-                JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
+                    textField3.setText("");
+                    textField4.setText("");
+                    textField5.setText("");
+                    textField6.setText("");
+                    textField7.setText("");
+                }
             }
         });
+
         inicioDeSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
