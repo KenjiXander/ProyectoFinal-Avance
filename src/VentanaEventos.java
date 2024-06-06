@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class VentanaEventos {
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private int contadorId = 1;
     private Usuario usuarioActual = null;
-    private Admin admin;
+    private Admin admin = new Admin();
 
     private JPanel panelEventos;
     private JPanel panelAdmin;
@@ -97,8 +98,10 @@ public class VentanaEventos {
                     }
                 }
 
-                if(!encontrar){
+                if(!encontrado){
                     errorInicio.setText("Las credenciales son erroneas");
+                    textField1.setText("");
+                    passwordField1.setText("");
                 }
 
             }
@@ -164,9 +167,68 @@ public class VentanaEventos {
         agregarEventoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String nombreEvento = textField2.getText();
+                String ciudad = comboBox1.getSelectedItem().toString();
+                int dia = Integer.parseInt(textField8.getText());
+                int mes = Integer.parseInt(textField9.getText());
+                int anio = Integer.parseInt(textField10.getText());
 
+                String error = admin.agregarEvento(nombreEvento, ciudad, dia, mes, anio);
+                if(error != null){
+                    JOptionPane.showMessageDialog(null,error);
+                } else{
+                    actualizarEventos();
+                }
+
+
+
+                textField2.setText("");
+                comboBox1.setSelectedIndex(0);
+                textField8.setText("");
+                textField9.setText("");
+                textField10.setText("");
             }
         });
+        crearNuevoEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registroPanel.setSelectedIndex(7);
+            }
+        });
+    }
+
+
+    private void actualizarEventos(){
+        eventosArea.setText("");
+        eventoPane1.setText("");
+        eventoPane2.setText("");
+        eventoPane3.setText("");
+        eventoPane4.setText("");
+        for(Evento evento: admin.getListaEventos()){
+            eventosArea.append(evento.toString()+"\n");
+        }
+
+        for(Evento ev:admin.getListaEventos()){
+            switch (ev.getIdEvento()){
+                case 1:
+                    eventoPane1.setText(ev.toString());
+                    break;
+                case 2:
+                    eventoPane2.setText(ev.toString());
+                    break;
+                case 3:
+                    eventoPane3.setText(ev.toString());
+                    break;
+                case 4:
+                    eventoPane4.setText(ev.toString());
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "La lista de eventos esta llena");
+                    break;
+            }
+        }
+
+
     }
 
     public static void main(String[] args) {
