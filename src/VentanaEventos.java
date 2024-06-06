@@ -19,7 +19,6 @@ public class VentanaEventos {
     private JTextField textField7;
     private JButton crearUsuarioButton;
     private JButton crearNuevoEventoButton;
-    private JButton modificarEventosButton;
     private JButton gestionarPromocionesButton;
     private JButton gestionarUsuariosButton;
     private JPasswordField passwordField1;
@@ -44,14 +43,24 @@ public class VentanaEventos {
     private JTextField textField8;
     private JTextField textField9;
     private JTextField textField10;
+    private JButton modificarEventoButton;
+    private JTextArea eventosArea;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private int contadorId = 1;
     private Usuario usuarioActual = null;
+    private Admin admin;
+
+    private JPanel panelEventos;
+    private JPanel panelAdmin;
 
     public VentanaEventos() {
 
         listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", 111));
+
+        panelEventos = (JPanel) registroPanel.getComponentAt(0);
+        panelAdmin = (JPanel) registroPanel.getComponentAt(3);
+
 
         irARegistroButton.addActionListener(new ActionListener() {
             @Override
@@ -66,11 +75,11 @@ public class VentanaEventos {
                 String pass = new String(passwordField1.getPassword());
 
 
-                boolean encontrar = false;
+                boolean encontrado = false;
 
                 for (Usuario us : listaUsuarios){
                     if(us.getUsuario().equals(usuario) && us.getContra().equals(pass)){
-                        encontrar = true;
+                        encontrado = true;
                         usuarioActual = us;
                         JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
                         inicioValor.setText("Bienvenido " + us.getUsuario());
@@ -150,6 +159,12 @@ public class VentanaEventos {
                     JOptionPane.showMessageDialog(null, "Solo el administrador puede acceder a esta pestaña");
                     registroPanel.setSelectedIndex(1);
                 }
+            }
+        });
+        agregarEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
