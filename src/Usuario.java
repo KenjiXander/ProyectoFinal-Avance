@@ -1,18 +1,28 @@
 public class Usuario {
 
+    private int id;
     private String usuario;
     private String nombre;
-    private String email;
+    private String contra;
     private String direccion;
     private int telefono;
 
 
-    public Usuario(String usuario, String nombre, String email, String direccion, int telefono) {
+    public Usuario(int id, String usuario, String nombre, String contra, String direccion, int telefono) {
+        this.id = id;
         this.usuario = usuario;
         this.nombre = nombre;
-        this.email = email;
+        this.contra = contra;
         this.direccion = direccion;
         this.telefono = telefono;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsuario() {
@@ -31,12 +41,12 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getEmail() {
-        return email;
+    public String getContra() {
+        return contra;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setContra(String contra) {
+        this.contra = contra;
     }
 
     public String getDireccion() {
@@ -58,10 +68,11 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario: " + usuario+
-                "Nombre Completo: " + nombre +
-                "Email: " + email +
-                "Direccion de domicilio: " + direccion +
+        return "ID: " + id + "\n" +
+                "Usuario: " + usuario+ "\n" +
+                "Nombre Completo: " + nombre + "\n" +
+                "Contraseña: " + contra + "\n" +
+                "Direccion de domicilio: " + direccion + "\n" +
                 "Telefono: " + telefono;
     }
 }
