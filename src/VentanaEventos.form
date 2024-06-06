@@ -39,7 +39,10 @@
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <enabled value="true"/>
+                </properties>
               </component>
               <component id="385a2" class="javax.swing.JTextArea" binding="eventoPane3">
                 <constraints>
@@ -47,7 +50,10 @@
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <enabled value="true"/>
+                </properties>
               </component>
               <component id="a2345" class="javax.swing.JTextArea" binding="eventoPane4">
                 <constraints>
@@ -55,7 +61,10 @@
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <enabled value="true"/>
+                </properties>
               </component>
               <component id="2f482" class="javax.swing.JTextArea" binding="eventoPane1">
                 <constraints>
@@ -63,7 +72,10 @@
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <editable value="false"/>
+                  <enabled value="true"/>
+                </properties>
               </component>
               <component id="584d" class="javax.swing.JButton" binding="cerrarSesionButton" default-binding="true">
                 <constraints>

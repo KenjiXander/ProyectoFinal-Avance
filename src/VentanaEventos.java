@@ -158,7 +158,9 @@ public class VentanaEventos {
         registroPanel.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if(registroPanel.getSelectedIndex() == 3 && (usuarioActual == null || usuarioActual.getId() != 0)){
+                int selectedIndex = registroPanel.getSelectedIndex();
+                if(selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6 || selectedIndex == 7 &&
+                        (usuarioActual == null || usuarioActual.getId() != 0)){
                     JOptionPane.showMessageDialog(null, "Solo el administrador puede acceder a esta pestaña");
                     registroPanel.setSelectedIndex(1);
                 }

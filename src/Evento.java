@@ -27,6 +27,6 @@ public class Evento {
 
     @Override
     public String toString() {
-        return nombreEvento + "\n" + ciudadEvento + "\n" + dia + "/" + mes + "/" + anio;
+        return nombreEvento + "\n" + ciudadEvento + "\n" + dia + "/" + mes + "/" + anio + "\n";
     }
 }
