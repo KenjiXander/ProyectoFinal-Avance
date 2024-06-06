@@ -133,7 +133,7 @@ public class VentanaEventos {
                 textField6.setText("");
                 textField7.setText("");
 
-                JOptionPane.showMessageDialog(panel1, "Usuario creado exitosamente");
+                JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
             }
         });
         inicioDeSesionButton.addActionListener(new ActionListener() {
