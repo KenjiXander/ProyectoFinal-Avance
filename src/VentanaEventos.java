@@ -70,22 +70,21 @@ public class VentanaEventos {
                 String usuario = textField1.getText();
                 String pass = new String(passwordField1.getPassword());
 
-
                 boolean encontrado = false;
 
-                for (Usuario us : listaUsuarios){
-                    if(us.getUsuario().equals(usuario) && us.getContra().equals(pass)){
+                for (Usuario us : listaUsuarios) {
+                    if (us.getUsuario().equals(usuario) && us.getContra().equals(pass)) {
                         encontrado = true;
-//                        usuarioActual = us;
+                        usuarioActual = us;
                         JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
                         inicioValor.setText("Bienvenido " + us.getUsuario());
                         textField1.setText("");
                         passwordField1.setText("");
                         errorInicio.setText("");
 
-                        if(us.getId() == 0){
+                        if (us.getId() == 0) {
                             registroPanel.setSelectedIndex(3);
-                        } else{
+                        } else {
                             registroPanel.setSelectedIndex(0);
                         }
 
@@ -93,14 +92,15 @@ public class VentanaEventos {
                     }
                 }
 
-                if(!encontrado){
+                if (!encontrado) {
                     errorInicio.setText("Las credenciales son erroneas");
                     textField1.setText("");
                     passwordField1.setText("");
                 }
-
             }
         });
+
+
         irAInicioDeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
