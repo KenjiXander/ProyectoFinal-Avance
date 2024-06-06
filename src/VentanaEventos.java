@@ -4,6 +4,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class VentanaEventos {
     private JTextField textField9;
     private JTextField textField10;
     private JButton modificarEventoButton;
-    private JTextArea eventosArea;
+    private JList list1;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private int contadorId = 1;
@@ -159,8 +161,8 @@ public class VentanaEventos {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int selectedIndex = registroPanel.getSelectedIndex();
-                if(selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6 || selectedIndex == 7 &&
-                        (usuarioActual == null || usuarioActual.getId() != 0)){
+                if ((selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6 || selectedIndex == 7) &&
+                        (usuarioActual == null || usuarioActual.getId() != 0)) {
                     JOptionPane.showMessageDialog(null, "Solo el administrador puede acceder a esta pestaña");
                     registroPanel.setSelectedIndex(1);
                 }
@@ -201,14 +203,19 @@ public class VentanaEventos {
 
 
     private void actualizarEventos(){
-        eventosArea.setText("");
+
+        DefaultListModel<String> dlm = new DefaultListModel<>();
+
+        for(Evento ev: admin.getListaEventos()){
+            dlm.addElement(ev.toString());
+        }
+
+        list1.setModel(dlm);
+
         eventoPane1.setText("");
         eventoPane2.setText("");
         eventoPane3.setText("");
         eventoPane4.setText("");
-        for(Evento evento: admin.getListaEventos()){
-            eventosArea.append(evento.toString()+"\n");
-        }
 
         for(Evento ev:admin.getListaEventos()){
             switch (ev.getIdEvento()){
