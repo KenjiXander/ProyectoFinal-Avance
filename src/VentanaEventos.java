@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,6 +34,16 @@ public class VentanaEventos {
     private JButton cerrarSesionButton1;
     private JButton inicioDeSesionButton;
     private JLabel inicioValor;
+    private JButton comprarButton;
+    private JButton comprarButton1;
+    private JButton comprarButton2;
+    private JButton comprarButton3;
+    private JButton agregarEventoButton;
+    private JTextField textField2;
+    private JComboBox comboBox1;
+    private JTextField textField8;
+    private JTextField textField9;
+    private JTextField textField10;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private int contadorId = 1;
@@ -119,7 +131,25 @@ public class VentanaEventos {
         cerrarSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                usuarioActual = null;
+                inicioValor.setText("No has iniciado sesion");
+            }
+        });
+        cerrarSesionButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                usuarioActual = null;
+                inicioValor.setText("No has iniciado sesion");
+                registroPanel.setSelectedIndex(1);
+            }
+        });
+        registroPanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(registroPanel.getSelectedIndex() == 3 && (usuarioActual == null || usuarioActual.getId() != 0)){
+                    JOptionPane.showMessageDialog(null, "Solo el administrador puede acceder a esta pestaña");
+                    registroPanel.setSelectedIndex(1);
+                }
             }
         });
     }
