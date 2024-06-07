@@ -48,6 +48,7 @@ public class VentanaEventos {
     private JTextField textField10;
     private JButton modificarEventoButton;
     private JList list1;
+    private JPasswordField passwordField2;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private int contadorId = 1;
@@ -56,7 +57,7 @@ public class VentanaEventos {
 
     public VentanaEventos() {
 
-        listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", 111));
+        listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124"));
 
         irARegistroButton.addActionListener(new ActionListener() {
             @Override
@@ -112,9 +113,9 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 String nombre = textField3.getText();
                 String usuario = textField4.getText();
-                String contra = textField5.getText();
+                String contra = new String(passwordField2.getPassword());
                 String direccion = textField6.getText();
-                int telefono = Integer.parseInt(textField7.getText());
+                String telefono = textField7.getText();
 
                 boolean usuarioExistente = false;
                 for (Usuario user : listaUsuarios) {
@@ -133,7 +134,7 @@ public class VentanaEventos {
 
                     textField3.setText("");
                     textField4.setText("");
-                    textField5.setText("");
+                    passwordField2.setText("");
                     textField6.setText("");
                     textField7.setText("");
                 }

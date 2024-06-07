@@ -5,10 +5,10 @@ public class Usuario {
     private String nombre;
     private String contra;
     private String direccion;
-    private int telefono;
+    private String telefono;
 
 
-    public Usuario(int id, String usuario, String nombre, String contra, String direccion, int telefono) {
+    public Usuario(int id, String usuario, String nombre, String contra, String direccion, String telefono) {
         this.id = id;
         this.usuario = usuario;
         this.nombre = nombre;
@@ -57,14 +57,13 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
 
     @Override
     public String toString() {
