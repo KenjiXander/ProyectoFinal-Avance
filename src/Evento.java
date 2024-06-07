@@ -16,6 +16,46 @@ public class Evento {
         this.anio = anio;
     }
 
+    public String getNombreEvento() {
+        return nombreEvento;
+    }
+
+    public void setNombreEvento(String nombreEvento) {
+        this.nombreEvento = nombreEvento;
+    }
+
+    public String getCiudadEvento() {
+        return ciudadEvento;
+    }
+
+    public void setCiudadEvento(String ciudadEvento) {
+        this.ciudadEvento = ciudadEvento;
+    }
+
+    public int getDia() {
+        return dia;
+    }
+
+    public void setDia(int dia) {
+        this.dia = dia;
+    }
+
+    public int getMes() {
+        return mes;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
+
+    public int getAnio() {
+        return anio;
+    }
+
+    public void setAnio(int anio) {
+        this.anio = anio;
+    }
+
     public int getIdEvento() {
         return idEvento;
     }

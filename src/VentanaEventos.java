@@ -204,6 +204,40 @@ public class VentanaEventos {
                 registroPanel.setSelectedIndex(7);
             }
         });
+
+
+        list1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int index = list1.getSelectedIndex();
+                if (index != -1) {
+                    Evento eventoSeleccionado = admin.getListaEventos().get(index);
+                    textField2.setText(eventoSeleccionado.getNombreEvento());
+                    comboBox1.setSelectedItem(eventoSeleccionado.getCiudadEvento());
+                    textField8.setText(String.valueOf(eventoSeleccionado.getDia()));
+                    textField9.setText(String.valueOf(eventoSeleccionado.getMes()));
+                    textField10.setText(String.valueOf(eventoSeleccionado.getAnio()));
+                }
+            }
+        });
+
+        modificarEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = list1.getSelectedIndex();
+                if (index != -1) {
+                    Evento eventoSeleccionado = admin.getListaEventos().get(index);
+                    eventoSeleccionado.setNombreEvento(textField2.getText());
+                    eventoSeleccionado.setCiudadEvento(comboBox1.getSelectedItem().toString());
+                    eventoSeleccionado.setDia(Integer.parseInt(textField8.getText()));
+                    eventoSeleccionado.setMes(Integer.parseInt(textField9.getText()));
+                    eventoSeleccionado.setAnio(Integer.parseInt(textField10.getText()));
+                    actualizarEventos();
+                }
+            }
+        });
+
+
     }
 
 
