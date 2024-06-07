@@ -236,9 +236,6 @@ public class VentanaEventos {
                 case 4:
                     eventoPane4.setText(ev.toString());
                     break;
-                default:
-                    JOptionPane.showMessageDialog(null, "La lista de eventos esta llena");
-                    break;
             }
         }
 
