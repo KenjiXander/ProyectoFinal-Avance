@@ -24,16 +24,16 @@ public class Admin {
 
 
     public List<Evento> getListaEventos(){
-            return listaEventos;
-        }
+        return listaEventos;
+    }
 
-        public Evento getEventoId(int id){
-            for(Evento even:listaEventos){
-                if(even.getIdEvento() == id){
-                    return even;
-                }
+    public Evento getEventoId(int id){
+        for(Evento even:listaEventos){
+            if(even.getIdEvento() == id){
+                return even;
             }
-            return null;
         }
+        return null;
+    }
 
 }
