@@ -6,15 +6,17 @@ public class Usuario {
     private String contra;
     private String direccion;
     private String telefono;
+    private String genero;
 
 
-    public Usuario(int id, String usuario, String nombre, String contra, String direccion, String telefono) {
+    public Usuario(int id, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
         this.id = id;
         this.usuario = usuario;
         this.nombre = nombre;
         this.contra = contra;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.genero = genero;
     }
 
     public int getId() {
@@ -65,6 +67,14 @@ public class Usuario {
         this.telefono = telefono;
     }
 
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
     @Override
     public String toString() {
         return "ID: " + id + "\n" +
@@ -72,6 +82,7 @@ public class Usuario {
                 "Nombre Completo: " + nombre + "\n" +
                 "Contraseña: " + contra + "\n" +
                 "Direccion de domicilio: " + direccion + "\n" +
-                "Telefono: " + telefono;
+                "Telefono: " + telefono + "\n" +
+                "Genero: " + genero;
     }
 }

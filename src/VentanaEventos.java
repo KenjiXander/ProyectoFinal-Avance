@@ -1,13 +1,9 @@
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class VentanaEventos {
@@ -36,30 +32,23 @@ public class VentanaEventos {
     private JButton inicioDeSesionButton;
     private JLabel inicioValor;
     private JButton agregarEventoButton;
-    private JTextField textField2;
-    private JComboBox comboBox1;
-    private JTextField textField8;
-    private JTextField textField9;
-    private JTextField textField10;
+    private JTextField idEvento;
+    private JComboBox ciudadEventoCombo;
+    private JTextField nombreEvento;
+    private JTextField horaEvento;
+    private JTextField fechaEvento;
     private JButton modificarEventoButton;
-    private JList list1;
     private JPasswordField passwordField2;
     private JComboBox comboBox2;
     private JTextField textField5;
     private JList list2;
-    private JTextField textField11;
-    private JTextField textField12;
     private JComboBox comboBox3;
-    private JTextField textField13;
-    private JButton agregarButton;
-    private JList list3;
+    private JTextField precioEvento;
     private JList list4;
     private JComboBox comboBox5;
-    private JTextField textField14;
-    private JTextField textField15;
-    private JTextField textField16;
+    private JTextField nombreLoca;
     private JButton agregarLocalidadButton;
-    private JList list5;
+    private JList listaLocalidad;
     private JTextField textField17;
     private JTextField textField18;
     private JList list6;
@@ -73,20 +62,42 @@ public class VentanaEventos {
     private JTextField textField19;
     private JButton eliminarDelCarritoButton;
     private JButton unirseALaColaButton;
+    private JTextField textField20;
+    private JTextField textField21;
+    private JTextField textField22;
+    private JTextField textField23;
+    private JTextField textField24;
+    private JComboBox comboBox6;
+    private JButton modificarUsuarioButton;
+    private JList list9;
+    private JComboBox localidadEventoCombo;
+    private JSpinner aforoEvento;
+    private JButton modificarLocalidadButton;
+    private JSpinner spinnerLocalidad;
+    private JComboBox artistaCombo;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
+    private List<Artista> listaArtistas = new ArrayList<>();
+    private List<Localidad> localidades = new ArrayList<>();
+
     private int contadorId = 1;
     private Usuario usuarioActual = null;
     private Admin admin = new Admin();
 
     public VentanaEventos() {
 
-        listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124"));
+        actualizarComboBoxArtistas();
+        actualizarComboBoxLocalidades();
+        listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
+
+        for (int i = 6; i < registroPanel.getTabCount(); i++) {
+            registroPanel.setEnabledAt(i, false);
+        }
 
         irARegistroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registroPanel.setSelectedIndex(2);
+                registroPanel.setSelectedIndex(0);
             }
         });
         iniciarSesionButton.addActionListener(new ActionListener() {
@@ -107,11 +118,17 @@ public class VentanaEventos {
                         passwordField1.setText("");
                         errorInicio.setText("");
 
-                        if (us.getId() == 0) {
-                            registroPanel.setSelectedIndex(3);
-                        } else {
-                            registroPanel.setSelectedIndex(0);
+                        if(usuarioActual.getUsuario().equals("admin")){
+                            for(int i = 6; i < registroPanel.getTabCount(); i++){
+                                registroPanel.setEnabledAt(i, true);
+                            }
+                        } else{
+                            for(int i = 6; i < registroPanel.getTabCount(); i++){
+                                registroPanel.setEnabledAt(i, false);
+                            }
                         }
+                        registroPanel.setEnabledAt(1, false);
+                        registroPanel.setSelectedIndex(2);
 
                         break;
                     }
@@ -126,12 +143,6 @@ public class VentanaEventos {
         });
 
 
-        irAInicioDeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                registroPanel.setSelectedIndex(1);
-            }
-        });
         crearUsuarioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +151,7 @@ public class VentanaEventos {
                 String contra = new String(passwordField2.getPassword());
                 String direccion = textField6.getText();
                 String telefono = textField7.getText();
+                String genero = comboBox2.getSelectedItem().toString();
 
                 if (!nombre.matches("[a-zA-Z ]+")) {
                     JOptionPane.showMessageDialog(null, "El nombre solo puede contener letras y espacios.");
@@ -161,7 +173,7 @@ public class VentanaEventos {
                 if (usuarioExistente) {
                     JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema");
                 } else {
-                    Usuario nuevoUsuario = new Usuario(contadorId++, usuario, nombre, contra, direccion, telefono);
+                    Usuario nuevoUsuario = new Usuario(contadorId++, usuario, nombre, contra, direccion, telefono, genero);
                     listaUsuarios.add(nuevoUsuario);
                     JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
 
@@ -170,6 +182,9 @@ public class VentanaEventos {
                     passwordField2.setText("");
                     textField6.setText("");
                     textField7.setText("");
+                    comboBox3.setSelectedIndex(0);
+
+                    list9.setListData(listaUsuarios.toArray(new Usuario[0]));
                 }
             }
         });
@@ -177,7 +192,9 @@ public class VentanaEventos {
         inicioDeSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registroPanel.setSelectedIndex(1);
+                if(usuarioActual == null){
+                    registroPanel.setSelectedIndex(1);
+                }
             }
         });
         cerrarSesionButton.addActionListener(new ActionListener() {
@@ -185,170 +202,204 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 usuarioActual = null;
                 inicioValor.setText("No has iniciado sesion");
+
+                registroPanel.setEnabledAt(1, true);
+
+                for (int i = 6; i < registroPanel.getTabCount(); i++) {
+                    registroPanel.setEnabledAt(i, false);
+                }
             }
         });
-        cerrarSesionButton1.addActionListener(new ActionListener() {
+
+
+        list9.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int indiceSeleccionado = list9.getSelectedIndex();
+
+                if(indiceSeleccionado != -1){
+                    Usuario usuarioSeleccionado = listaUsuarios.get(indiceSeleccionado);
+                    textField20.setText(usuarioSeleccionado.getNombre());
+                    textField21.setText(usuarioSeleccionado.getUsuario());
+                    textField22.setText(usuarioSeleccionado.getContra());
+                    textField23.setText(usuarioSeleccionado.getDireccion());
+                    textField24.setText(usuarioSeleccionado.getTelefono());
+                    comboBox6.setSelectedItem(usuarioSeleccionado.getGenero());
+                }
+            }
+        });
+        modificarUsuarioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                usuarioActual = null;
-                inicioValor.setText("No has iniciado sesion");
-                registroPanel.setSelectedIndex(1);
+                int indiceSeleccionado = list9.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    Usuario usuarioSeleccionado = listaUsuarios.get(indiceSeleccionado);
+                    usuarioSeleccionado.setNombre(textField20.getText());
+                    usuarioSeleccionado.setUsuario(textField21.getText());
+                    usuarioSeleccionado.setContra(textField22.getText());
+                    usuarioSeleccionado.setDireccion(textField23.getText());
+                    usuarioSeleccionado.setTelefono(textField24.getText());
+                    usuarioSeleccionado.setGenero(comboBox6.getSelectedItem().toString());
+
+                    list9.setListData(listaUsuarios.toArray(new Usuario[0]));
+                }
             }
         });
-        registroPanel.addChangeListener(new ChangeListener() {
+        irAInicioDeButton.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                int selectedIndex = registroPanel.getSelectedIndex();
-                if ((selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6 || selectedIndex == 7) &&
-                        (usuarioActual == null || usuarioActual.getId() != 0)) {
-                    JOptionPane.showMessageDialog(null, "Solo el administrador puede acceder a esta pestaña");
+            public void actionPerformed(ActionEvent e) {
+                if(usuarioActual == null){
                     registroPanel.setSelectedIndex(1);
                 }
             }
         });
-        agregarEventoButton.addActionListener(new ActionListener() {
+        agregarArtistaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombreEvento = textField2.getText();
-                String ciudad = comboBox1.getSelectedItem().toString();
+                String nombreArtista = textField18.getText();
 
-                String[] fechaEscoger = textField10.getText().split("/");
-                int dia = Integer.parseInt(fechaEscoger[0]);
-                int mes = Integer.parseInt(fechaEscoger[1]);
-                int anio = Integer.parseInt(fechaEscoger[2]);
+                Artista nuevoArtista = new Artista(nombreArtista);
 
-                Calendar calendarioActual = Calendar.getInstance();
-                calendarioActual.setTime(new Date());
-                int diaActual = calendarioActual.get(Calendar.DAY_OF_MONTH);
-                int mesActual = calendarioActual.get(Calendar.MONTH) + 1;
-                int anioActual = calendarioActual.get(Calendar.YEAR);
+                listaArtistas.add(nuevoArtista);
 
-                if(anio < anioActual || (anio == anioActual && mes < mesActual) || (anio == anioActual && mes == mesActual && dia < diaActual)){
-                    JOptionPane.showMessageDialog(null, "La fecha ingresada no puede ser anterior a la actual");
-                    return;
+                DefaultListModel<Artista> listModel = new DefaultListModel<>();
+                for(Artista artista:listaArtistas){
+                    listModel.addElement(artista);
                 }
+                list6.setModel(listModel);
 
-                if (mes < 1 || mes > 12) {
-                    JOptionPane.showMessageDialog(null, "El mes debe estar entre 1 y 12");
-                    return;
-                }
-
-                int diasEnMes = 31;
-                if (mes == 4 || mes == 6 || mes == 9 || mes == 11) {
-                    diasEnMes = 30;
-                } else if (mes == 2) {
-                    if ((anio % 4 == 0 && anio % 100 != 0) || anio % 400 == 0) {
-                        diasEnMes = 29;
-                    } else {
-                        diasEnMes = 28;
-                    }
-                }
-
-                if (dia < 1 || dia > diasEnMes) {
-                    JOptionPane.showMessageDialog(null, "El día debe estar entre 1 y " + diasEnMes + " para el mes seleccionado");
-                    return;
-                }
-
-                String error = admin.agregarEvento(nombreEvento, ciudad, dia, mes, anio);
-                if(error != null){
-                    JOptionPane.showMessageDialog(null,error);
-                } else{
-                    actualizarEventos();
-                }
-
-
-
-                textField2.setText("");
-                comboBox1.setSelectedIndex(0);
-                textField10.setText("");
+                actualizarComboBoxArtistas();
+                textField18.setText("");
             }
         });
-        crearNuevoEventoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                registroPanel.setSelectedIndex(7);
-            }
-        });
-
-
-        list1.addMouseListener(new MouseAdapter() {
+        list6.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int index = list1.getSelectedIndex();
-                if (index != -1) {
-                    Evento eventoSeleccionado = admin.getListaEventos().get(index);
-                    textField2.setText(eventoSeleccionado.getNombreEvento());
-                    comboBox1.setSelectedItem(eventoSeleccionado.getCiudadEvento());
-                    textField10.setText(eventoSeleccionado.getDia() + "/" + eventoSeleccionado.getMes() + "/" + eventoSeleccionado.getAnio());
+                int indiceSeleccionado = list6.getSelectedIndex();
 
+                if(indiceSeleccionado != -1){
+                    Artista artistaSeleccionado = listaArtistas.get(indiceSeleccionado);
+                    textField18.setText(artistaSeleccionado.getNombreArtista());
                 }
             }
         });
-
-        modificarEventoButton.addActionListener(new ActionListener() {
+        modificarArtistaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = list1.getSelectedIndex();
-                if (index != -1) {
-                    Evento eventoSeleccionado = admin.getListaEventos().get(index);
-                    eventoSeleccionado.setNombreEvento(textField2.getText());
-                    eventoSeleccionado.setCiudadEvento(comboBox1.getSelectedItem().toString());
+                int indiceSeleccionado = list6.getSelectedIndex();
 
-                    String[] fechaEscoger = textField10.getText().split("/");
-                    int dia = Integer.parseInt(fechaEscoger[0]);
-                    int mes = Integer.parseInt(fechaEscoger[1]);
-                    int anio = Integer.parseInt(fechaEscoger[2]);
+                if(indiceSeleccionado != -1){
+                    String nombreArtista = textField18.getText();
 
-                    eventoSeleccionado.setDia(dia);
-                    eventoSeleccionado.setMes(mes);
-                    eventoSeleccionado.setAnio(anio);
-                    actualizarEventos();
+                    Artista artistaModificado = new Artista(nombreArtista);
+                    listaArtistas.set(indiceSeleccionado, artistaModificado);
+
+                    DefaultListModel<Artista> listModel = new DefaultListModel<>();
+                    for(Artista artista:listaArtistas){
+                        listModel.addElement(artista);
+                    }
+                    list6.setModel(listModel);
+                    textField18.setText("");
                 }
             }
         });
+        agregarLocalidadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreLocalidad = nombreLoca.getText();
+                int capacidadLocalidad = (int) spinnerLocalidad.getValue(); //Revisar este el (int)
 
+                Localidad nuevaLocalidad = new Localidad(nombreLocalidad, capacidadLocalidad);
+                localidades.add(nuevaLocalidad);
 
+                actualizarListaLocalidades();
+                limpiarCamposLocalidad();
+                actualizarComboBoxLocalidades();
+
+            }
+        });
+        listaLocalidad.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int indiceSeleccionado = listaLocalidad.getSelectedIndex();
+
+                if(indiceSeleccionado != -1){
+                    Localidad localidadSeleccionada = localidades.get(indiceSeleccionado);
+                    nombreLoca.setText(localidadSeleccionada.getNombreLocalidad());
+                    spinnerLocalidad.setValue(localidadSeleccionada.getCapacidadLocalidad());
+                }
+            }
+        });
+        modificarLocalidadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indiceSeleccionado = listaLocalidad.getSelectedIndex();
+
+                if(indiceSeleccionado != -1){
+                    String nombreLocalidad = nombreLoca.getText();
+                    int capacidadLocalidad = (int) spinnerLocalidad.getValue(); //revisar (int)
+
+                    Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad);
+                    localidades.set(indiceSeleccionado, localidadModificada);
+
+                    actualizarListaLocalidades();
+                    limpiarCamposLocalidad();
+                }
+            }
+        });
+        localidadEventoCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem(); //revisar (String)
+                int capacidad = obtenerCapacidadEvento(nombreSeleccionado);
+                aforoEvento.setValue(capacidad);
+            }
+        });
     }
 
 
-    private void actualizarEventos(){
 
-        DefaultListModel<String> dlm = new DefaultListModel<>();
 
-        for(Evento ev: admin.getListaEventos()){
-            dlm.addElement(ev.toString());
+    private void actualizarListaLocalidades(){
+        DefaultListModel<Localidad> model = new DefaultListModel<>();
+        for(Localidad localidad:localidades){
+            model.addElement(localidad);
         }
+        listaLocalidad.setModel(model);
+    }
 
-        list1.setModel(dlm);
+    private void limpiarCamposLocalidad(){
+        nombreLoca.setText("");
+        spinnerLocalidad.setValue(0);
+    }
 
-        eventoPane1.setText("");
-        eventoPane2.setText("");
-        eventoPane3.setText("");
-        eventoPane4.setText("");
 
-        for(Evento ev:admin.getListaEventos()){
-            switch (ev.getIdEvento()){
-                case 1:
-                    eventoPane1.setText(ev.toString());
-                    break;
-                case 2:
-                    eventoPane2.setText(ev.toString());
-                    break;
-                case 3:
-                    eventoPane3.setText(ev.toString());
-                    break;
-                case 4:
-                    eventoPane4.setText(ev.toString());
-                    break;
+    private int obtenerCapacidadEvento(String nombreEvento){
+        for(Localidad localidad:localidades){
+            if(localidad.getNombreLocalidad().equals(nombreEvento)){
+                return localidad.getCapacidadLocalidad();
             }
         }
-
-
+        return 0;
     }
 
+    private void actualizarComboBoxArtistas(){
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("Escoger artista...");
+        for (Artista artista : listaArtistas) {
+            model.addElement(artista.getNombreArtista());
+        }
+        artistaCombo.setModel(model);
+    }
 
-
-
+    private void actualizarComboBoxLocalidades(){
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("Escoger localidad...");
+        for (Localidad localidad : localidades) {
+            model.addElement(localidad.getNombreLocalidad());
+        }
+        localidadEventoCombo.setModel(model);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("VentanaEventos");
@@ -356,7 +407,8 @@ public class VentanaEventos {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(700,800);
+        frame.setSize(900,800);
         frame.setLocationRelativeTo(null);
     }
+
 }
