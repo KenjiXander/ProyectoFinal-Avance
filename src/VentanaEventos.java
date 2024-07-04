@@ -75,6 +75,7 @@ public class VentanaEventos {
     private JButton modificarLocalidadButton;
     private JSpinner spinnerLocalidad;
     private JComboBox artistaCombo;
+    private JTextField cantidadButacas;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
@@ -86,8 +87,6 @@ public class VentanaEventos {
 
     public VentanaEventos() {
 
-        actualizarComboBoxArtistas();
-        actualizarComboBoxLocalidades();
         listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
 
         for (int i = 6; i < registroPanel.getTabCount(); i++) {
@@ -400,6 +399,7 @@ public class VentanaEventos {
         }
         localidadEventoCombo.setModel(model);
     }
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("VentanaEventos");
