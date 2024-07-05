@@ -108,7 +108,6 @@ public class VentanaEventos {
     private DefaultListModel<Evento> modeloEventos = new DefaultListModel<>();
     private List<Factura> carrito = new ArrayList<>();
     private DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
-    private List<Publicidad> listaPublicidades = new ArrayList<>();
 
 
     private int contadorId = 1;
@@ -589,6 +588,59 @@ public class VentanaEventos {
                             idEventoSeleccionado, plataformaSeleccionada, presupuestoUsado, fechaInicio, fechaCulminacion);
                     modeloCarrito.addElement(publicidad);
                     list2.setModel(modeloCarrito);
+                }
+            }
+        });
+        list4.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int indiceSeleccionado = list4.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    Evento eventoSeleccionado = modeloEventos.getElementAt(indiceSeleccionado);
+                    nombreEvento.setText(eventoSeleccionado.getNombreEvento());
+                    idEvento.setText(String.valueOf(eventoSeleccionado.getIdEvento()));
+                    horaEvento.setText(eventoSeleccionado.getHoraEvento());
+                    fechaEvento.setText(eventoSeleccionado.getFechaEvento());
+                    comboBox5.setSelectedItem(eventoSeleccionado.getGeneroMusical());
+                    ciudadEventoCombo.setSelectedItem(eventoSeleccionado.getCiudadEvento());
+                    localidadEventoCombo.setSelectedItem(eventoSeleccionado.getLocalidadEvento());
+                    aforoEvento.setValue(eventoSeleccionado.getAforoEvento());
+                    artistaCombo.setSelectedItem(eventoSeleccionado.getArtista());
+                    generalField.setText(String.valueOf(eventoSeleccionado.getGeneralCantidad()));
+                    platinumField.setText(String.valueOf(eventoSeleccionado.getPlatinumCantidad()));
+                    vipField.setText(String.valueOf(eventoSeleccionado.getVipCantidad()));
+                    generalPrecio.setText(String.valueOf(eventoSeleccionado.getGeneralPrecio()));
+                    platinumPrecio.setText(String.valueOf(eventoSeleccionado.getPlatinumPrecio()));
+                    vipPrecio.setText(String.valueOf(eventoSeleccionado.getVipPrecio()));
+                }
+            }
+        });
+        modificarEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indiceSeleccionado = list4.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    Evento eventoSeleccionado = modeloEventos.getElementAt(indiceSeleccionado);
+                    eventoSeleccionado.setNombreEvento(nombreEvento.getText());
+                    eventoSeleccionado.setIdEvento(Integer.parseInt(idEvento.getText()));
+                    eventoSeleccionado.setHoraEvento(horaEvento.getText());
+                    eventoSeleccionado.setFechaEvento(fechaEvento.getText());
+                    eventoSeleccionado.setGeneroMusical((String) comboBox5.getSelectedItem());
+                    eventoSeleccionado.setCiudadEvento((String) ciudadEventoCombo.getSelectedItem());
+                    eventoSeleccionado.setLocalidadEvento((String) localidadEventoCombo.getSelectedItem());
+                    eventoSeleccionado.setAforoEvento((Integer) aforoEvento.getValue());
+                    eventoSeleccionado.setArtista((String) artistaCombo.getSelectedItem());
+                    eventoSeleccionado.setGeneralCantidad(Integer.parseInt(generalField.getText()));
+                    eventoSeleccionado.setPlatinumCantidad(Integer.parseInt(platinumField.getText()));
+                    eventoSeleccionado.setVipCantidad(Integer.parseInt(vipField.getText()));
+                    eventoSeleccionado.setGeneralPrecio(Double.parseDouble(generalPrecio.getText()));
+                    eventoSeleccionado.setPlatinumPrecio(Double.parseDouble(platinumPrecio.getText()));
+                    eventoSeleccionado.setVipPrecio(Double.parseDouble(vipPrecio.getText()));
+
+                    modeloEventos.set(indiceSeleccionado, eventoSeleccionado);
+                    JOptionPane.showMessageDialog(null, "Se ha modificado el evento");
+                    list4.repaint();
+
                 }
             }
         });
