@@ -95,17 +95,12 @@ public class VentanaEventos {
     private JButton buscarPorCiudadButton;
     private JTextField generoArtistaTF;
     private JList list1;
-    private JCheckBox instagramCheckBox;
-    private JCheckBox facebookCheckBox;
-    private JCheckBox linkedInCheckBox;
-    private JCheckBox televisionCheckBox;
-    private JCheckBox radioCheckBox;
-    private JCheckBox tiktokCheckBox;
     private JSpinner spinner2;
     private JTextField textField2;
     private JTextField textField5;
     private JButton agregarPublicidadButton;
     private JList list2;
+    private JComboBox comboBox1;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
@@ -113,6 +108,7 @@ public class VentanaEventos {
     private DefaultListModel<Evento> modeloEventos = new DefaultListModel<>();
     private List<Factura> carrito = new ArrayList<>();
     private DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
+    private List<Publicidad> listaPublicidades = new ArrayList<>();
 
 
     private int contadorId = 1;
@@ -565,17 +561,34 @@ public class VentanaEventos {
                 ordenarYMostrarResultados(resultados);
             }
         });
-        list1.addMouseListener(new MouseAdapter() {
+
+        agregarPublicidadButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list1.getSelectedIndex();
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
                     Evento eventoSeleccionado = modeloEventos.getElementAt(indiceSeleccionado);
-                    textField2.setText(eventoSeleccionado.getFechaEvento());
-                    comboBox1.setSelectedItem(eventoSeleccionado.getGeneroMusical());
-                    textField8.setText(eventoSeleccionado.getHoraEvento());
-                    textField9.setText(eventoSeleccionado.getCiudadEvento());
-                    textField10.setText(eventoSeleccionado.getLocalidadEvento());
+                    String idEventoSeleccionado = String.valueOf(eventoSeleccionado.getIdEvento());
+                    String plataformaSeleccionada = comboBox1.getSelectedItem().toString();
+                    int presupuestoUsado = (int) spinner2.getValue();
+                    String fechaInicio = textField2.getText();
+                    String fechaCulminacion = textField5.getText();
+
+                    // Validación de las fechas
+                    if (!fechaInicio.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de la fecha de inicio debe ser dd/mm/aaaa.");
+                        return;
+                    }
+                    if (!fechaCulminacion.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de la fecha de culminación debe ser dd/mm/aaaa.");
+                        return;
+                    }
+
+                    // Crear el string de publicidad y agregarlo al modelo de lista
+                    String publicidad = String.format("Evento: %s - Plataforma: %s - Presupuesto: %d - Fecha de inicio: %s - Fecha de culminación: %s",
+                            idEventoSeleccionado, plataformaSeleccionada, presupuestoUsado, fechaInicio, fechaCulminacion);
+                    modeloCarrito.addElement(publicidad);
+                    list2.setModel(modeloCarrito);
                 }
             }
         });
