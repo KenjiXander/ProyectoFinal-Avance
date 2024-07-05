@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +89,7 @@ public class VentanaEventos {
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
     private List<Localidad> localidades = new ArrayList<>();
+    private DefaultListModel<Evento> modeloEventos = new DefaultListModel<>();
 
     private int contadorId = 1;
     private Usuario usuarioActual = null;
@@ -372,7 +375,7 @@ public class VentanaEventos {
                     String hora = horaEvento.getText();
                     String fecha = fechaEvento.getText();
                     String genero = comboBox5.getSelectedItem().toString();
-                    int aforo = (int) aforoEvento.getValue();
+                    int aforo = (int) aforoEvento.getValue(); //revisar (int)
                     String artista = artistaCombo.getSelectedItem().toString();
                     boolean general = generalCheck.isSelected();
                     int generalCantidad = general ? Integer.parseInt(generalField.getText()) : 0;
@@ -384,9 +387,67 @@ public class VentanaEventos {
                     int vipCantidad = vip ? Integer.parseInt(vipField.getText()) : 0;
                     double vipPrecioValor = vip ? Double.parseDouble(vipPrecio.getText()) : 0.0;
 
+                    int totalButacas = generalCantidad + platinumCantidad + vipCantidad;
+
+                    if (!nombre.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "El nombre del evento solo puede contener letras y espacios.");
+                        return;
+                    }
+
+                    if (!idEvento.getText().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(null, "El ID del evento solo puede contener números.");
+                        return;
+                    }
+
+                    if (!hora.matches("\\d{2}:\\d{2}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de hora debe ser hh:mm.");
+                        return;
+                    }
+
+                    if (!fecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de fecha debe ser dd/mm/aaaa.");
+                        return;
+                    }
+
+                    LocalDate fechaActual = LocalDate.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate fechaEvento = LocalDate.parse(fecha, formatter);
+
+                    if (fechaEvento.isBefore(fechaActual)) {
+                        JOptionPane.showMessageDialog(null, "La fecha del evento no puede ser menor a la fecha actual.");
+                        return;
+                    }
+
+                    if (comboBox5.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger un género musical para el evento.");
+                        return;
+                    }
+
+                    if (ciudadEventoCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger una ciudad para el evento.");
+                        return;
+                    }
+
+                    if (localidadEventoCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger una localidad para el evento.");
+                        return;
+                    }
+
+                    if (artistaCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger un artista para el evento.");
+                        return;
+                    }
+
+                    if (totalButacas != aforo) {
+                        JOptionPane.showMessageDialog(null, "Debes asignar todos los asientos disponibles sin pasarte del total.");
+                        return;
+                    }
+
+
                     Evento evento = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
-                    DefaultListModel<Evento> model = (DefaultListModel<Evento>) list4.getModel();
-                    model.addElement(evento);
+                    modeloEventos.addElement(evento);
+                    list4.setModel(modeloEventos);
+                    limpiarAgregarEvento();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar evento: " + ex.getMessage());
                 }
@@ -436,6 +497,27 @@ public class VentanaEventos {
             model.addElement(localidad.getNombreLocalidad());
         }
         localidadEventoCombo.setModel(model);
+    }
+
+    private void limpiarAgregarEvento(){
+        idEvento.setText("");
+        nombreEvento.setText("");
+        ciudadEventoCombo.setSelectedIndex(0);
+        localidadEventoCombo.setSelectedIndex(0);
+        horaEvento.setText("");
+        fechaEvento.setText("");
+        comboBox5.setSelectedIndex(0);
+        aforoEvento.setValue(0);
+        artistaCombo.setSelectedIndex(0);
+        generalCheck.setSelected(false);
+        generalField.setText("");
+        generalPrecio.setText("");
+        platinumCheck.setSelected(false);
+        platinumField.setText("");
+        platinumPrecio.setText("");
+        vipCheck.setSelected(false);
+        vipField.setText("");
+        vipPrecio.setText("");
     }
 
 
