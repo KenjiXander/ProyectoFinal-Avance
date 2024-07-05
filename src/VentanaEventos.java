@@ -1,12 +1,11 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import GestionEvento.Evento;
+import Arboles.OrdenarArbol;
 
 public class VentanaEventos {
     private JTabbedPane registroPanel;
@@ -20,7 +19,7 @@ public class VentanaEventos {
     private JTextField textField7;
     private JButton crearUsuarioButton;
     private JButton crearNuevoEventoButton;
-    private JButton buscarButton;
+    private JButton ordenarButton;
     private JPasswordField passwordField1;
     private JTextArea eventoPane2;
     private JTextArea eventoPane3;
@@ -41,9 +40,9 @@ public class VentanaEventos {
     private JButton modificarEventoButton;
     private JPasswordField passwordField2;
     private JComboBox comboBox2;
-    private JTextField textField5;
-    private JList list2;
-    private JComboBox comboBox3;
+    private JTextField nombreNavTF;
+    private JList navList;
+    private JComboBox generoMusicalNavCB;
     private JList list4;
     private JComboBox comboBox5;
     private JTextField nombreLoca;
@@ -61,7 +60,6 @@ public class VentanaEventos {
     private JList list8;
     private JTextField textField19;
     private JButton eliminarDelCarritoButton;
-    private JButton unirseALaColaButton;
     private JTextField textField20;
     private JTextField textField21;
     private JTextField textField22;
@@ -84,11 +82,25 @@ public class VentanaEventos {
     private JTextField generalPrecio;
     private JTextField platinumPrecio;
     private JTextField vipPrecio;
+    private JButton comprarButton;
+    private JButton buscarPorNombreButton;
+    private JComboBox artistaNavCB;
+    private JButton buscarPorArtistaButton;
+    private JTextField fechaNavTF;
+    private JButton buscarPorFechaButton;
+    private JButton buscarPorGeneroButton;
+    private JComboBox localidadNavCB;
+    private JButton buscarPorLocalidadButton;
+    private JComboBox ciudadNavCB;
+    private JButton buscarPorCiudadButton;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
     private List<Localidad> localidades = new ArrayList<>();
     private DefaultListModel<Evento> modeloEventos = new DefaultListModel<>();
+    private List<Factura> carrito = new ArrayList<>();
+    private DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
+
 
     private int contadorId = 1;
     private Usuario usuarioActual = null;
@@ -96,6 +108,9 @@ public class VentanaEventos {
     public VentanaEventos() {
 
         listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
+
+        modeloEventos = new DefaultListModel<>();
+        Navegar navegar = new Navegar(modeloEventos);
 
         for (int i = 2; i < registroPanel.getTabCount(); i++) {
             registroPanel.setEnabledAt(i, false);
@@ -115,34 +130,8 @@ public class VentanaEventos {
 
                 boolean encontrado = false;
 
-                for (Usuario us : listaUsuarios) {
-                    if (us.getUsuario().equals(usuario) && us.getContra().equals(pass)) {
-                        encontrado = true;
-                        usuarioActual = us;
-                        JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
-                        inicioValor.setText("Bienvenido " + us.getUsuario());
-                        textField1.setText("");
-                        passwordField1.setText("");
-                        errorInicio.setText("");
+                verificarInicioSesion(usuario,pass,encontrado);
 
-                        if(usuarioActual.getUsuario().equals("admin")){
-                            for(int i = 2; i < registroPanel.getTabCount(); i++){
-                                registroPanel.setEnabledAt(i, true);
-                            }
-                        } else{
-                            for(int i = 2; i < registroPanel.getTabCount(); i++){
-                                registroPanel.setEnabledAt(i, true);
-                            }
-                            for(int i = 4; i < registroPanel.getTabCount(); i++){
-                                registroPanel.setEnabledAt(i, false);
-                            }
-                        }
-                        registroPanel.setEnabledAt(1, false);
-                        registroPanel.setSelectedIndex(2);
-
-                        break;
-                    }
-                }
 
                 if (!encontrado) {
                     errorInicio.setText("Las credenciales son erroneas");
@@ -187,6 +176,7 @@ public class VentanaEventos {
                     listaUsuarios.add(nuevoUsuario);
                     JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
 
+
                     textField3.setText("");
                     textField4.setText("");
                     passwordField2.setText("");
@@ -194,7 +184,7 @@ public class VentanaEventos {
                     textField7.setText("");
                     comboBox2.setSelectedIndex(0);
 
-                    list9.setListData(listaUsuarios.toArray(new Usuario[0])); //revisar toArray
+                    list9.setListData(listaUsuarios.toArray(new Usuario[0]));
                 }
             }
         });
@@ -376,7 +366,7 @@ public class VentanaEventos {
                     String hora = horaEvento.getText();
                     String fecha = fechaEvento.getText();
                     String genero = comboBox5.getSelectedItem().toString();
-                    int aforo = (int) aforoEvento.getValue(); //revisar (int)
+                    int aforo = (int) aforoEvento.getValue();
                     String artista = artistaCombo.getSelectedItem().toString();
                     boolean general = generalCheck.isSelected();
                     int generalCantidad = general ? Integer.parseInt(generalField.getText()) : 0;
@@ -400,8 +390,8 @@ public class VentanaEventos {
                         return;
                     }
 
-                    if (!hora.matches("\\d{2}:\\d{2}")) {
-                        JOptionPane.showMessageDialog(null, "El formato de hora debe ser hh:mm.");
+                    if (!hora.matches("^([01]?[0-9]|2[0-3]):([0-5][0-9])$")) {
+                        JOptionPane.showMessageDialog(null, "El formato de hora debe ser hh:mm con valores validos.");
                         return;
                     }
 
@@ -448,15 +438,139 @@ public class VentanaEventos {
                     Evento evento = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
                     modeloEventos.addElement(evento);
                     list4.setModel(modeloEventos);
+                    list7.setModel(modeloEventos);
                     limpiarAgregarEvento();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar evento: " + ex.getMessage());
                 }
             }
         });
+        list7.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int indiceSeleccionado = list7.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    Evento eventoSeleccionado = modeloEventos.getElementAt(indiceSeleccionado);
+                    actualizarComboBox4(eventoSeleccionado);
+                }
+            }
+        });
+        agregarAlCarritoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                agregarEntradaAlCarrito();
+                spinner1.setValue(0);
+            }
+        });
+        eliminarDelCarritoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int indiceSeleccionado = list8.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    carrito.remove(indiceSeleccionado);
+                    actualizarCarrito();
+                }
+            }
+        });
+        comprarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                generarFactura();
+            }
+        });
+        buscarPorNombreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreNavTF.getText();
+                List<Evento> resultados = navegar.buscarPorNombre(nombre);
+                mostrarResultados(resultados);
+            }
+        });
+
+        buscarPorFechaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fecha = fechaNavTF.getText();
+                List<Evento> resultados = navegar.buscarPorFecha(fecha);
+                mostrarResultados(resultados);
+            }
+        });
+
+        buscarPorGeneroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String genero = generoMusicalNavCB.getSelectedItem().toString();
+                List<Evento> resultados = navegar.buscarPorGenero(genero);
+                mostrarResultados(resultados);
+            }
+        });
+
+        buscarPorLocalidadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String localidad = localidadNavCB.getSelectedItem().toString();
+                List<Evento> resultados = navegar.buscarPorLocalidad(localidad);
+                mostrarResultados(resultados);
+            }
+        });
+
+        buscarPorCiudadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String ciudad = ciudadNavCB.getSelectedItem().toString();
+                List<Evento> resultados = navegar.buscarPorCiudad(ciudad);
+                mostrarResultados(resultados);
+            }
+        });
+        buscarPorArtistaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String artista = artistaNavCB.getSelectedItem().toString();
+                List<Evento> resultados = navegar.buscarPorArtista(artista);
+                mostrarResultados(resultados);
+            }
+        });
+
+        ordenarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Evento> resultados = new ArrayList<>();
+                for (int i = 0; i < navList.getModel().getSize(); i++) {
+                    resultados.add((Evento) navList.getModel().getElementAt(i));
+                }
+                ordenarYMostrarResultados(resultados);
+            }
+        });
     }
 
 
+    private void verificarInicioSesion(String usuario, String pass, boolean encontrado){
+        for (Usuario us : listaUsuarios) {
+            if (us.getUsuario().equals(usuario) && us.getContra().equals(pass)) {
+                encontrado = true;
+                usuarioActual = us;
+                JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
+                inicioValor.setText("Bienvenido " + us.getUsuario());
+                textField1.setText("");
+                passwordField1.setText("");
+                errorInicio.setText("");
+
+                if(usuarioActual.getUsuario().equals("admin")){
+                    for(int i = 2; i < registroPanel.getTabCount(); i++){
+                        registroPanel.setEnabledAt(i, true);
+                    }
+                } else{
+                    for(int i = 2; i < 4; i++){
+                        registroPanel.setEnabledAt(i, true);
+                    }
+                }
+                registroPanel.setEnabledAt(1, false);
+                registroPanel.setSelectedIndex(2);
+
+                break;
+            }
+        }
+    }
 
 
     private void actualizarListaLocalidades(){
@@ -489,6 +603,7 @@ public class VentanaEventos {
             model.addElement(artista.getNombreArtista());
         }
         artistaCombo.setModel(model);
+        artistaNavCB.setModel(model);
     }
 
     private void actualizarComboBoxLocalidades(){
@@ -498,6 +613,7 @@ public class VentanaEventos {
             model.addElement(localidad.getNombreLocalidad());
         }
         localidadEventoCombo.setModel(model);
+        localidadNavCB.setModel(model);
     }
 
     private void limpiarAgregarEvento(){
@@ -520,6 +636,98 @@ public class VentanaEventos {
         vipField.setText("");
         vipPrecio.setText("");
     }
+
+    private void actualizarComboBox4(Evento evento){
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        model.addElement("Escoge el tipo de entrada...");
+
+        if(evento.isGeneral()){
+            model.addElement("General - $" + evento.getGeneralPrecio() + " - Cantidad disponible de entradas: " + evento.getGeneralCantidad());
+        }
+        if (evento.isPlatinum()) {
+            model.addElement("Platinum - $" + evento.getPlatinumPrecio() + " - Cantidad disponible: " + evento.getPlatinumCantidad());
+        }
+        if (evento.isVip()) {
+            model.addElement("VIP - $" + evento.getVipPrecio() + " - Cantidad disponible: " + evento.getVipCantidad());
+        }
+
+        comboBox4.setModel(model);
+    }
+
+    private void agregarEntradaAlCarrito(){
+        String tipoEntrada = (String) comboBox4.getSelectedItem();
+        int cantidad = (int) spinner1.getValue();
+
+        if(tipoEntrada.equals("Escoge el tipo de entrada...") || cantidad <= 0){
+            JOptionPane.showMessageDialog(null, "Porfavor selecciona un tipo de entrada y una cantidad valida");
+            return;
+        }
+
+        String[] partes = tipoEntrada.split(" - ");
+        double precio = Double.parseDouble(partes[1].substring(1));
+
+        carrito.add(new Factura(tipoEntrada, cantidad, precio));
+        actualizarCarrito();
+    }
+
+    private void actualizarCarrito(){
+        modeloCarrito.clear();
+        double total = 0.0;
+
+        for(Factura entrada:carrito){
+            String tipoEntrada = entrada.getTipoEntrada();
+            int cantidad = entrada.getCantidad();
+            String[] partes = tipoEntrada.split(" - ");
+            String item = partes[0] + " - $" + partes[1].substring(1) + " x" + cantidad;
+            modeloCarrito.addElement(item);
+            total += cantidad * entrada.getPrecio();
+        }
+
+        list8.setModel(modeloCarrito);
+        textField19.setText(String.format("%.2f", total));
+    }
+
+    private void generarFactura(){
+        StringBuilder factura = new StringBuilder();
+        factura.append("***** Factura *****\n\n");
+
+        factura.append("Informacion del Comprador:\n");
+        factura.append("Nombre: Consumidor Final\n");
+        factura.append("Cedula: 1111111111\n\n");
+
+        factura.append("Detalles de la Compra:\n");
+        for(Factura item: carrito){
+            factura.append(item.getTipoEntrada()).append("\n");
+        }
+
+        factura.append("\nTotal a Pagar: $").append(textField19.getText()).append("\n");
+
+        JOptionPane.showMessageDialog(null,factura.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
+
+        limpiarCarrito();
+    }
+
+    private void limpiarCarrito(){
+        modeloCarrito.clear();
+        carrito.clear();
+        textField19.setText("");
+    }
+
+    private void ordenarYMostrarResultados(List<Evento> resultados) {
+        OrdenarArbol ordenarArbol = new OrdenarArbol();
+        List<Evento> eventosOrdenados = ordenarArbol.ordenarPorNombre(resultados);
+        mostrarResultados(eventosOrdenados);
+    }
+
+    private void mostrarResultados(List<Evento> resultados) {
+        DefaultListModel<Evento> model = new DefaultListModel<>();
+        for (Evento evento : resultados) {
+            model.addElement(evento);
+        }
+        navList.setModel(model);
+    }
+
 
 
     public static void main(String[] args) {

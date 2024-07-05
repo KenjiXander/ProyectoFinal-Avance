@@ -1,3 +1,5 @@
+package GestionEvento;
+
 public class Evento {
 
     private int idEvento;
@@ -6,9 +8,6 @@ public class Evento {
     private String localidadEvento;
     private String horaEvento;
     private String fechaEvento;
-    private int dia;
-    private int mes;
-    private int anio;
     private String generoMusical;
     private int aforoEvento;
     private String artista;
@@ -42,6 +41,7 @@ public class Evento {
         this.vipCantidad = vipCantidad;
         this.vipPrecio = vipPrecio;
     }
+
 
 
 
@@ -191,6 +191,6 @@ public class Evento {
 
     @Override
     public String toString() {
-        return nombreEvento + " - " + ciudadEvento + " - " + localidadEvento + " - " + fechaEvento + " " + horaEvento;
+        return nombreEvento + " - " + "Ciudad: " + ciudadEvento + " - " + "Localidad: " + localidadEvento + " - " + fechaEvento + " " + horaEvento;
     }
 }
