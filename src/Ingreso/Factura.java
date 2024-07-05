@@ -1,4 +1,4 @@
-package GestionEvento;
+package Ingreso;
 
 public class Factura {
 

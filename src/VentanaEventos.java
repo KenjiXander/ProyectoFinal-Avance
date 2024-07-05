@@ -7,10 +7,10 @@ import java.util.List;
 import GestionEvento.Evento;
 import Arboles.OrdenarArbol;
 import GestionEvento.Artista;
-import GestionEvento.Factura;
+import Ingreso.Factura;
 import GestionEvento.Localidad;
 import GestionEvento.Navegar;
-import GestionEvento.Usuario;
+import Ingreso.Usuario;
 
 public class VentanaEventos {
     private JTabbedPane registroPanel;
