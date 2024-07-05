@@ -92,13 +92,12 @@ public class VentanaEventos {
 
     private int contadorId = 1;
     private Usuario usuarioActual = null;
-    private Admin admin = new Admin();
 
     public VentanaEventos() {
 
         listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
 
-        for (int i = 6; i < registroPanel.getTabCount(); i++) {
+        for (int i = 2; i < registroPanel.getTabCount(); i++) {
             registroPanel.setEnabledAt(i, false);
         }
 
@@ -127,11 +126,14 @@ public class VentanaEventos {
                         errorInicio.setText("");
 
                         if(usuarioActual.getUsuario().equals("admin")){
-                            for(int i = 6; i < registroPanel.getTabCount(); i++){
+                            for(int i = 2; i < registroPanel.getTabCount(); i++){
                                 registroPanel.setEnabledAt(i, true);
                             }
                         } else{
-                            for(int i = 6; i < registroPanel.getTabCount(); i++){
+                            for(int i = 2; i < registroPanel.getTabCount(); i++){
+                                registroPanel.setEnabledAt(i, true);
+                            }
+                            for(int i = 4; i < registroPanel.getTabCount(); i++){
                                 registroPanel.setEnabledAt(i, false);
                             }
                         }
@@ -190,9 +192,9 @@ public class VentanaEventos {
                     passwordField2.setText("");
                     textField6.setText("");
                     textField7.setText("");
-                    comboBox3.setSelectedIndex(0);
+                    comboBox2.setSelectedIndex(0);
 
-                    list9.setListData(listaUsuarios.toArray(new Usuario[0]));
+                    list9.setListData(listaUsuarios.toArray(new Usuario[0])); //revisar toArray
                 }
             }
         });
@@ -213,7 +215,7 @@ public class VentanaEventos {
 
                 registroPanel.setEnabledAt(1, true);
 
-                for (int i = 6; i < registroPanel.getTabCount(); i++) {
+                for (int i = 2; i < registroPanel.getTabCount(); i++) {
                     registroPanel.setEnabledAt(i, false);
                 }
             }
