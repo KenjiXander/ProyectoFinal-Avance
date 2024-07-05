@@ -11,12 +11,8 @@ public class Admin {
         this.listaEventos = new ArrayList<>();
     }
 
-    public String agregarEvento(String nombre, String ciudad, int dia, int mes, int anio){
-        if(listaEventos.size() >= 4){
-            return "La lista de eventos está llena";
-        }
-
-        Evento nuevoEvento = new Evento(idActual, nombre, ciudad, dia, mes, anio);
+    public String agregarEvento(String nombre, String ciudad, String localidad, String hora, String fecha, String genero, int aforo, String artista, boolean general, int generalCantidad, double generalPrecio, boolean platinum, int platinumCantidad, double platinumPrecio, boolean vip, int vipCantidad, double vipPrecio) {
+        Evento nuevoEvento = new Evento(idActual, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista, general, generalCantidad, generalPrecio, platinum, platinumCantidad, platinumPrecio, vip, vipCantidad, vipPrecio);
         listaEventos.add(nuevoEvento);
         idActual++;
         return null;

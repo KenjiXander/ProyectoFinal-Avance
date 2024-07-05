@@ -43,7 +43,6 @@ public class VentanaEventos {
     private JTextField textField5;
     private JList list2;
     private JComboBox comboBox3;
-    private JTextField precioEvento;
     private JList list4;
     private JComboBox comboBox5;
     private JTextField nombreLoca;
@@ -75,7 +74,15 @@ public class VentanaEventos {
     private JButton modificarLocalidadButton;
     private JSpinner spinnerLocalidad;
     private JComboBox artistaCombo;
-    private JTextField cantidadButacas;
+    private JCheckBox generalCheck;
+    private JCheckBox platinumCheck;
+    private JCheckBox vipCheck;
+    private JTextField generalField;
+    private JTextField platinumField;
+    private JTextField vipField;
+    private JTextField generalPrecio;
+    private JTextField platinumPrecio;
+    private JTextField vipPrecio;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
@@ -352,6 +359,37 @@ public class VentanaEventos {
                 String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem(); //revisar (String)
                 int capacidad = obtenerCapacidadEvento(nombreSeleccionado);
                 aforoEvento.setValue(capacidad);
+            }
+        });
+        agregarEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int id = Integer.parseInt(idEvento.getText());
+                    String nombre = nombreEvento.getText();
+                    String ciudad = ciudadEventoCombo.getSelectedItem().toString();
+                    String localidad = localidadEventoCombo.getSelectedItem().toString();
+                    String hora = horaEvento.getText();
+                    String fecha = fechaEvento.getText();
+                    String genero = comboBox5.getSelectedItem().toString();
+                    int aforo = (int) aforoEvento.getValue();
+                    String artista = artistaCombo.getSelectedItem().toString();
+                    boolean general = generalCheck.isSelected();
+                    int generalCantidad = general ? Integer.parseInt(generalField.getText()) : 0;
+                    double generalPrecioValor = general ? Double.parseDouble(generalPrecio.getText()) : 0.0;
+                    boolean platinum = platinumCheck.isSelected();
+                    int platinumCantidad = platinum ? Integer.parseInt(platinumField.getText()) : 0;
+                    double platinumPrecioValor = platinum ? Double.parseDouble(platinumPrecio.getText()) : 0.0;
+                    boolean vip = vipCheck.isSelected();
+                    int vipCantidad = vip ? Integer.parseInt(vipField.getText()) : 0;
+                    double vipPrecioValor = vip ? Double.parseDouble(vipPrecio.getText()) : 0.0;
+
+                    Evento evento = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
+                    DefaultListModel<Evento> model = (DefaultListModel<Evento>) list4.getModel();
+                    model.addElement(evento);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al agregar evento: " + ex.getMessage());
+                }
             }
         });
     }
