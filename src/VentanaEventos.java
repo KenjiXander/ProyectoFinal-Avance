@@ -94,6 +94,18 @@ public class VentanaEventos {
     private JComboBox ciudadNavCB;
     private JButton buscarPorCiudadButton;
     private JTextField generoArtistaTF;
+    private JList list1;
+    private JCheckBox instagramCheckBox;
+    private JCheckBox facebookCheckBox;
+    private JCheckBox linkedInCheckBox;
+    private JCheckBox televisionCheckBox;
+    private JCheckBox radioCheckBox;
+    private JCheckBox tiktokCheckBox;
+    private JSpinner spinner2;
+    private JTextField textField2;
+    private JTextField textField5;
+    private JButton agregarPublicidadButton;
+    private JList list2;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
@@ -450,6 +462,7 @@ public class VentanaEventos {
                     modeloEventos.addElement(evento);
                     list4.setModel(modeloEventos);
                     list7.setModel(modeloEventos);
+                    list1.setModel(modeloEventos);
                     limpiarAgregarEvento();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar evento: " + ex.getMessage());
@@ -550,6 +563,20 @@ public class VentanaEventos {
                     resultados.add((Evento) navList.getModel().getElementAt(i));
                 }
                 ordenarYMostrarResultados(resultados);
+            }
+        });
+        list1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int indiceSeleccionado = list1.getSelectedIndex();
+                if(indiceSeleccionado != -1){
+                    Evento eventoSeleccionado = modeloEventos.getElementAt(indiceSeleccionado);
+                    textField2.setText(eventoSeleccionado.getFechaEvento());
+                    comboBox1.setSelectedItem(eventoSeleccionado.getGeneroMusical());
+                    textField8.setText(eventoSeleccionado.getHoraEvento());
+                    textField9.setText(eventoSeleccionado.getCiudadEvento());
+                    textField10.setText(eventoSeleccionado.getLocalidadEvento());
+                }
             }
         });
     }
