@@ -22,7 +22,6 @@ public class VentanaEventos {
     private JButton crearNuevoEventoButton;
     private JButton buscarButton;
     private JPasswordField passwordField1;
-    private JButton salirDeLaColaButton;
     private JTextArea eventoPane2;
     private JTextArea eventoPane3;
     private JTextArea eventoPane4;
