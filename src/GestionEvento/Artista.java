@@ -1,3 +1,5 @@
+package GestionEvento;
+
 public class Artista {
 
     private String nombreArtista;

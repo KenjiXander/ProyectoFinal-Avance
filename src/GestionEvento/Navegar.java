@@ -1,4 +1,4 @@
-import GestionEvento.Evento;
+package GestionEvento;
 
 import javax.swing.*;
 import java.util.ArrayList;

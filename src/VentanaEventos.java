@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import GestionEvento.Evento;
 import Arboles.OrdenarArbol;
+import GestionEvento.Artista;
+import GestionEvento.Factura;
+import GestionEvento.Localidad;
+import GestionEvento.Navegar;
+import GestionEvento.Usuario;
 
 public class VentanaEventos {
     private JTabbedPane registroPanel;

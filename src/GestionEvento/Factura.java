@@ -1,3 +1,5 @@
+package GestionEvento;
+
 public class Factura {
 
     private String tipoEntrada;

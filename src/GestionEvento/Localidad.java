@@ -1,3 +1,5 @@
+package GestionEvento;
+
 public class Localidad {
 
     private String nombreLocalidad;
