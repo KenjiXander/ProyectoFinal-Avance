@@ -93,6 +93,7 @@ public class VentanaEventos {
     private JButton buscarPorLocalidadButton;
     private JComboBox ciudadNavCB;
     private JButton buscarPorCiudadButton;
+    private JTextField generoArtistaTF;
 
     private List<Usuario> listaUsuarios = new ArrayList<>();
     private List<Artista> listaArtistas = new ArrayList<>();
@@ -257,19 +258,25 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreArtista = textField18.getText();
+                String generoArtista = generoArtistaTF.getText();
 
-                Artista nuevoArtista = new Artista(nombreArtista);
+                if(!nombreArtista.isEmpty() && !generoArtista.isEmpty()){
+                    Artista nuevoArtista = new Artista(nombreArtista, generoArtista);
+                    listaArtistas.add(nuevoArtista);
 
-                listaArtistas.add(nuevoArtista);
+                    DefaultListModel<Artista> listModel = new DefaultListModel<>();
+                    for(Artista artista:listaArtistas){
+                        listModel.addElement(artista);
+                    }
+                    list6.setModel(listModel);
 
-                DefaultListModel<Artista> listModel = new DefaultListModel<>();
-                for(Artista artista:listaArtistas){
-                    listModel.addElement(artista);
+                    actualizarComboBoxArtistas();
+                    actualizarComboBoxGeneros();
+                    textField18.setText("");
+                    generoArtistaTF.setText("");
+                } else{
+                    JOptionPane.showMessageDialog(null, "Por favor ingresa el nombre del artista y su género musical.");
                 }
-                list6.setModel(listModel);
-
-                actualizarComboBoxArtistas();
-                textField18.setText("");
             }
         });
         list6.addMouseListener(new MouseAdapter() {
@@ -280,6 +287,7 @@ public class VentanaEventos {
                 if(indiceSeleccionado != -1){
                     Artista artistaSeleccionado = listaArtistas.get(indiceSeleccionado);
                     textField18.setText(artistaSeleccionado.getNombreArtista());
+                    generoArtistaTF.setText(artistaSeleccionado.getGeneroArtista());
                 }
             }
         });
@@ -290,8 +298,9 @@ public class VentanaEventos {
 
                 if(indiceSeleccionado != -1){
                     String nombreArtista = textField18.getText();
+                    String generoArtista = generoArtistaTF.getText();
 
-                    Artista artistaModificado = new Artista(nombreArtista);
+                    Artista artistaModificado = new Artista(nombreArtista,generoArtista);
                     listaArtistas.set(indiceSeleccionado, artistaModificado);
 
                     DefaultListModel<Artista> listModel = new DefaultListModel<>();
@@ -300,6 +309,8 @@ public class VentanaEventos {
                     }
                     list6.setModel(listModel);
                     textField18.setText("");
+                    generoArtistaTF.setText("");
+                    actualizarComboBoxGeneros();
                 }
             }
         });
@@ -605,6 +616,18 @@ public class VentanaEventos {
         artistaCombo.setModel(model);
         artistaNavCB.setModel(model);
     }
+
+    private void actualizarComboBoxGeneros(){
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("Escoger género musical...");
+        for (Artista artista : listaArtistas) {
+            model.addElement(artista.getGeneroArtista());
+        }
+        comboBox5.setModel(model);
+        generoMusicalNavCB.setModel(model);
+    }
+
+
 
     private void actualizarComboBoxLocalidades(){
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();

@@ -1,11 +1,12 @@
 public class Artista {
 
     private String nombreArtista;
+    private String generoArtista;
 
-    public Artista(String nombreArtista) {
+    public Artista(String nombreArtista, String generoArtista) {
         this.nombreArtista = nombreArtista;
+        this.generoArtista = generoArtista;
     }
-
 
     public String getNombreArtista() {
         return nombreArtista;
@@ -15,8 +16,16 @@ public class Artista {
         this.nombreArtista = nombreArtista;
     }
 
+    public String getGeneroArtista() {
+        return generoArtista;
+    }
+
+    public void setGeneroArtista(String generoArtista) {
+        this.generoArtista = generoArtista;
+    }
+
     @Override
     public String toString() {
-        return "Nombre artista: " + nombreArtista;
+        return nombreArtista;
     }
 }
