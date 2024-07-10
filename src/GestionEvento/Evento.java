@@ -1,5 +1,11 @@
 package GestionEvento;
 
+import Arboles.OrdenarArbol;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Evento {
 
     private int idEvento;
@@ -10,7 +16,7 @@ public class Evento {
     private String fechaEvento;
     private String generoMusical;
     private int aforoEvento;
-    private String artista;
+    private String artistaEvento;
     private boolean general;
     private int generalCantidad;
     private double generalPrecio;
@@ -20,8 +26,23 @@ public class Evento {
     private boolean vip;
     private int vipCantidad;
     private double vipPrecio;
+    public List<Artista> listaArtistas;
+    public List<Localidad> listaLocalidades;
 
-    public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artista, boolean general, int generalCantidad, double generalPrecio, boolean platinum, int platinumCantidad, double platinumPrecio, boolean vip, int vipCantidad, double vipPrecio) {
+    public Evento() {
+        this.listaArtistas= new ArrayList<>();
+        this.listaLocalidades = new ArrayList<>();
+    }
+
+    public void agregarArtista(Artista artista){
+        listaArtistas.add(artista);
+    }
+
+    public void agregarLocalidad(Localidad localidad){
+        listaLocalidades.add(localidad);
+    }
+
+    public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artistaEvento, boolean general, int generalCantidad, double generalPrecio, boolean platinum, int platinumCantidad, double platinumPrecio, boolean vip, int vipCantidad, double vipPrecio) {
         this.idEvento = idEvento;
         this.nombreEvento = nombreEvento;
         this.ciudadEvento = ciudadEvento;
@@ -30,7 +51,7 @@ public class Evento {
         this.fechaEvento = fechaEvento;
         this.generoMusical = generoMusical;
         this.aforoEvento = aforoEvento;
-        this.artista = artista;
+        this.artistaEvento = artistaEvento;
         this.general = general;
         this.generalCantidad = generalCantidad;
         this.generalPrecio = generalPrecio;
@@ -43,6 +64,20 @@ public class Evento {
     }
 
 
+
+    public void ordenarYMostrarResultados(List<Evento> resultados, JList<Evento> navList) {
+        OrdenarArbol ordenarArbol = new OrdenarArbol();
+        List<Evento> eventosOrdenados = ordenarArbol.ordenarPorNombre(resultados);
+        mostrarResultados(eventosOrdenados, navList);
+    }
+
+    public void mostrarResultados(List<Evento> resultados, JList<Evento> navList) {
+        DefaultListModel<Evento> model = new DefaultListModel<>();
+        for (Evento evento : resultados) {
+            model.addElement(evento);
+        }
+        navList.setModel(model);
+    }
 
 
     public int getIdEvento() {
@@ -109,12 +144,12 @@ public class Evento {
         this.aforoEvento = aforoEvento;
     }
 
-    public String getArtista() {
-        return artista;
+    public String getArtistaEvento() {
+        return artistaEvento;
     }
 
-    public void setArtista(String artista) {
-        this.artista = artista;
+    public void setArtistaEvento(String artista) {
+        this.artistaEvento = artistaEvento;
     }
 
     public boolean isGeneral() {

@@ -5,6 +5,9 @@ public class Artista {
     private String nombreArtista;
     private String generoArtista;
 
+    public Artista() {
+    }
+
     public Artista(String nombreArtista, String generoArtista) {
         this.nombreArtista = nombreArtista;
         this.generoArtista = generoArtista;

@@ -1,5 +1,11 @@
 package Ingreso;
 
+import GestionEvento.Evento;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Usuario {
 
     private int id;
@@ -9,6 +15,32 @@ public class Usuario {
     private String direccion;
     private String telefono;
     private String genero;
+    public List<Factura> carrito;
+    public DefaultListModel<String> modeloCarrito;
+    public List<Usuario> listaUsuarios = new ArrayList<>();
+    public DefaultListModel<Evento> listaEventos;
+
+    public Usuario() {
+        this.carrito = new ArrayList<>();
+        this.modeloCarrito = new DefaultListModel<>();
+        this.listaEventos = new DefaultListModel<>();
+    }
+
+    public void agregarCarrito(Factura carritos){
+        carrito.add(carritos);
+    }
+
+    public void eliminarCarrito(int carritos){
+        carrito.remove(carritos);
+    }
+
+    public void agregarModeloCarrito(String modeloCarritos){
+        modeloCarrito.addElement(modeloCarritos);
+    }
+
+    public void agregarEventoGestionado(Evento evento){
+        listaEventos.addElement(evento);
+    }
 
 
     public Usuario(int id, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
@@ -20,6 +52,8 @@ public class Usuario {
         this.telefono = telefono;
         this.genero = genero;
     }
+
+
 
     public int getId() {
         return id;
