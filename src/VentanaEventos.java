@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import CapaNegocio.Evento;
 import CapaNegocio.Artista;
@@ -695,6 +696,7 @@ public class VentanaEventos {
                     }
 
                     Evento eventoAgregar = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista);
+                    eventoAgregar.listaLocalidades.add(localidadSeleccionada);
                     usuario.agregarEventoGestionado(eventoAgregar);
                     list4.setModel(usuario.listaEventos);
                     list7.setModel(usuario.listaEventos);
@@ -705,7 +707,6 @@ public class VentanaEventos {
                 }
             }
         });
-
 
 
         list7.addMouseListener(new MouseAdapter() {
@@ -875,7 +876,6 @@ public class VentanaEventos {
             }
         });
 
-
         modificarEventoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -893,7 +893,7 @@ public class VentanaEventos {
                     eventoSeleccionado.setArtistaEvento((String) artistaCombo.getSelectedItem());
 
                     Localidad localidadSeleccionada = null;
-                    for (Localidad loc : eventoSeleccionado.listaLocalidades) {
+                    for (Localidad loc : evento.listaLocalidades) {
                         if (loc.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
                             localidadSeleccionada = loc;
                             break;
@@ -910,6 +910,9 @@ public class VentanaEventos {
                         localidadSeleccionada.setVip(vipCheck.isSelected());
                         localidadSeleccionada.setVipCantidad(Integer.parseInt(vipField.getText()));
                         localidadSeleccionada.setVipPrecio(Double.parseDouble(vipPrecio.getText()));
+
+                        eventoSeleccionado.getListaLocalidades().clear();
+                        eventoSeleccionado.getListaLocalidades().add(localidadSeleccionada);
                     }
 
                     usuario.listaEventos.set(indiceSeleccionado, eventoSeleccionado);
@@ -918,6 +921,8 @@ public class VentanaEventos {
                 }
             }
         });
+
+
 
         limpiarButton.addActionListener(new ActionListener() {
             @Override
@@ -1094,28 +1099,50 @@ public class VentanaEventos {
     }
 
 
-
-
-
-
-
-
-
-    private void agregarEntradaAlCarrito(){
+    private void agregarEntradaAlCarrito() {
         String tipoEntrada = (String) comboBox4.getSelectedItem();
         int cantidad = (int) spinner1.getValue();
 
-        if(tipoEntrada.equals("Escoge el tipo de entrada...") || cantidad <= 0){
-            JOptionPane.showMessageDialog(null, "Porfavor selecciona un tipo de entrada y una cantidad valida");
+        System.out.println("Tipo de entrada seleccionado: " + tipoEntrada);
+        System.out.println("Cantidad seleccionada: " + cantidad);
+
+        if (tipoEntrada.equals("Escoge el tipo de entrada...") || cantidad <= 0) {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un tipo de entrada y una cantidad válida.");
             return;
         }
 
-        String[] partes = tipoEntrada.split(" - ");
-        double precio = Double.parseDouble(partes[1].substring(1));
+        try {
+            String[] partes = tipoEntrada.split(" - ");
+            System.out.println("Partes del tipo de entrada: " + Arrays.toString(partes));
 
-        usuario.agregarCarrito(new Factura(tipoEntrada, cantidad, precio));
-        actualizarCarrito();
+            if (partes.length < 3) {
+                throw new IllegalArgumentException("El formato del tipo de entrada es incorrecto.");
+            }
+
+            double precio = Double.parseDouble(partes[1].substring(1));
+            int cantidadDisponible = Integer.parseInt(partes[2].split(": ")[1]);
+
+            System.out.println("Precio: " + precio);
+            System.out.println("Cantidad disponible: " + cantidadDisponible);
+
+            if (cantidad > cantidadDisponible) {
+                JOptionPane.showMessageDialog(null, "No puedes ingresar una cantidad mayor a la disponible.");
+                return;
+            }
+
+            usuario.agregarCarrito(new Factura(tipoEntrada, cantidad, precio));
+            actualizarCarrito();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error al procesar la cantidad o el precio: " + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Error al procesar el tipo de entrada: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
+        }
     }
+
+
+
 
     private void actualizarCarrito(){
         usuario.modeloCarrito.clear();
