@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Evento {
-
     private int idEvento;
     private String nombreEvento;
     private String ciudadEvento;
@@ -17,32 +16,23 @@ public class Evento {
     private String generoMusical;
     private int aforoEvento;
     private String artistaEvento;
-    private boolean general;
-    private int generalCantidad;
-    private double generalPrecio;
-    private boolean platinum;
-    private int platinumCantidad;
-    private double platinumPrecio;
-    private boolean vip;
-    private int vipCantidad;
-    private double vipPrecio;
     public List<Artista> listaArtistas;
     public List<Localidad> listaLocalidades;
 
     public Evento() {
-        this.listaArtistas= new ArrayList<>();
+        this.listaArtistas = new ArrayList<>();
         this.listaLocalidades = new ArrayList<>();
     }
 
-    public void agregarArtista(Artista artista){
+    public void agregarArtista(Artista artista) {
         listaArtistas.add(artista);
     }
 
-    public void agregarLocalidad(Localidad localidad){
+    public void agregarLocalidad(Localidad localidad) {
         listaLocalidades.add(localidad);
     }
 
-    public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artistaEvento, boolean general, int generalCantidad, double generalPrecio, boolean platinum, int platinumCantidad, double platinumPrecio, boolean vip, int vipCantidad, double vipPrecio) {
+    public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artistaEvento) {
         this.idEvento = idEvento;
         this.nombreEvento = nombreEvento;
         this.ciudadEvento = ciudadEvento;
@@ -52,18 +42,7 @@ public class Evento {
         this.generoMusical = generoMusical;
         this.aforoEvento = aforoEvento;
         this.artistaEvento = artistaEvento;
-        this.general = general;
-        this.generalCantidad = generalCantidad;
-        this.generalPrecio = generalPrecio;
-        this.platinum = platinum;
-        this.platinumCantidad = platinumCantidad;
-        this.platinumPrecio = platinumPrecio;
-        this.vip = vip;
-        this.vipCantidad = vipCantidad;
-        this.vipPrecio = vipPrecio;
     }
-
-
 
     public void ordenarYMostrarResultados(List<Evento> resultados, JList<Evento> navList) {
         OrdenarArbol ordenarArbol = new OrdenarArbol();
@@ -78,7 +57,6 @@ public class Evento {
         }
         navList.setModel(model);
     }
-
 
     public int getIdEvento() {
         return idEvento;
@@ -152,80 +130,11 @@ public class Evento {
         this.artistaEvento = artistaEvento;
     }
 
-    public boolean isGeneral() {
-        return general;
-    }
-
-    public void setGeneral(boolean general) {
-        this.general = general;
-    }
-
-    public int getGeneralCantidad() {
-        return generalCantidad;
-    }
-
-    public void setGeneralCantidad(int generalCantidad) {
-        this.generalCantidad = generalCantidad;
-    }
-
-    public double getGeneralPrecio() {
-        return generalPrecio;
-    }
-
-    public void setGeneralPrecio(double generalPrecio) {
-        this.generalPrecio = generalPrecio;
-    }
-
-    public boolean isPlatinum() {
-        return platinum;
-    }
-
-    public void setPlatinum(boolean platinum) {
-        this.platinum = platinum;
-    }
-
-    public int getPlatinumCantidad() {
-        return platinumCantidad;
-    }
-
-    public void setPlatinumCantidad(int platinumCantidad) {
-        this.platinumCantidad = platinumCantidad;
-    }
-
-    public double getPlatinumPrecio() {
-        return platinumPrecio;
-    }
-
-    public void setPlatinumPrecio(double platinumPrecio) {
-        this.platinumPrecio = platinumPrecio;
-    }
-
-    public boolean isVip() {
-        return vip;
-    }
-
-    public void setVip(boolean vip) {
-        this.vip = vip;
-    }
-
-    public int getVipCantidad() {
-        return vipCantidad;
-    }
-
-    public void setVipCantidad(int vipCantidad) {
-        this.vipCantidad = vipCantidad;
-    }
-
-    public double getVipPrecio() {
-        return vipPrecio;
-    }
-
-    public void setVipPrecio(double vipPrecio) {
-        this.vipPrecio = vipPrecio;
-    }
-
     @Override
     public String toString() {
-        return nombreEvento + " - " + "Ciudad: " + ciudadEvento + " - " + "Localidad: " + localidadEvento + " - " + fechaEvento + " " + horaEvento;
+        return nombreEvento + " - " +
+                "Ciudad: " + ciudadEvento + " - " +
+                "Localidad: " + localidadEvento + " - " +
+                fechaEvento + " " + horaEvento;
     }
 }
