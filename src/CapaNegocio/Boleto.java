@@ -4,17 +4,13 @@ public class Boleto {
     private int idBoleto;
     private int idUsuario;
     private int idEvento;
-    private String tipoEntrada;
-    private int cantidad;
-    private double precio;
+    private Factura factura;
 
-    public Boleto(int idBoleto, int idUsuario, int idEvento, String tipoEntrada, int cantidad, double precio) {
+    public Boleto(int idBoleto, int idUsuario, int idEvento, Factura factura) {
         this.idBoleto = idBoleto;
         this.idUsuario = idUsuario;
         this.idEvento = idEvento;
-        this.tipoEntrada = tipoEntrada;
-        this.cantidad = cantidad;
-        this.precio = precio;
+        this.factura = factura;
     }
 
     public int getIdBoleto() {
@@ -41,28 +37,12 @@ public class Boleto {
         this.idEvento = idEvento;
     }
 
-    public String getTipoEntrada() {
-        return tipoEntrada;
+    public Factura getFactura() {
+        return factura;
     }
 
-    public void setTipoEntrada(String tipoEntrada) {
-        this.tipoEntrada = tipoEntrada;
-    }
-
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setFactura(Factura factura) {
+        this.factura = factura;
     }
 
     @Override
@@ -70,8 +50,6 @@ public class Boleto {
         return "idBoleto: " + idBoleto + "\n" +
                 "Nombre de Usuario: " + idUsuario + "\n" +
                 "Evento: " + idEvento + "\n" +
-                "Tipo de entrada: " + tipoEntrada + "\n" +
-                "Cantidad: " + cantidad + "\n" +
-                "Precio: " + precio;
+                "Factura: " + factura;
     }
 }

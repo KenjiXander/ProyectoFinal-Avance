@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Usuario {
 
-    private int id;
+    private int idUsuario;
     private String usuario;
     private String nombre;
     private String contra;
@@ -17,6 +17,8 @@ public class Usuario {
     public DefaultListModel<String> modeloCarrito;
     public List<Usuario> listaUsuarios = new ArrayList<>();
     public DefaultListModel<Evento> listaEventos;
+    public List<Boleto> listaBoletos = new ArrayList<>();
+    public int nextBoletoId = 1;
 
     public Usuario() {
         this.carrito = new ArrayList<>();
@@ -40,9 +42,13 @@ public class Usuario {
         listaEventos.addElement(evento);
     }
 
+    public void agregarBoleto(Boleto boleto){
+        listaBoletos.add(boleto);
+    }
 
-    public Usuario(int id, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
-        this.id = id;
+
+    public Usuario(int idUsuario, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
+        this.idUsuario = idUsuario;
         this.usuario = usuario;
         this.nombre = nombre;
         this.contra = contra;
@@ -53,12 +59,12 @@ public class Usuario {
 
 
 
-    public int getId() {
-        return id;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getUsuario() {
@@ -109,9 +115,14 @@ public class Usuario {
         this.genero = genero;
     }
 
+    public int getNextBoletoId(){
+        return nextBoletoId++;
+    }
+
+
     @Override
     public String toString() {
-        return "ID: " + id + "\n" +
+        return "ID: " + idUsuario + "\n" +
                 "Usuario: " + usuario+ "\n" +
                 "Nombre Completo: " + nombre + "\n" +
                 "Contraseña: " + contra + "\n" +

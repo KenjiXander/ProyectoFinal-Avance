@@ -5,12 +5,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import CapaNegocio.Evento;
-import CapaNegocio.Artista;
-import CapaNegocio.Factura;
-import CapaNegocio.Localidad;
+
+import CapaNegocio.*;
 import CapaEstructuras.Navegar;
-import CapaNegocio.Usuario;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -112,8 +110,6 @@ public class VentanaEventos {
     private JButton limpiarButton1;
     private JButton limpiarButton2;
 
-
-    private Localidad localidad = new Localidad();
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
     Navegar navegar = new Navegar(usuario.listaEventos);
@@ -741,8 +737,13 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 generarFactura();
+                Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
+                for (Factura item : usuario.carrito) {
+                    agregarBoleto(item, eventoSeleccionado);
+                }
             }
         });
+
         buscarPorNombreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1117,14 +1118,10 @@ public class VentanaEventos {
             return;
         }
 
-        // Guardar solo la parte necesaria en el carrito
         String tipoButaca = partes[0] + " - $" + String.format("%.2f", precio);
         usuario.agregarCarrito(new Factura(tipoButaca, cantidad, precio));
         actualizarCarrito();
     }
-
-
-
 
     private void actualizarCarrito() {
         usuario.modeloCarrito.clear();
@@ -1159,6 +1156,22 @@ public class VentanaEventos {
             int cantidad = item.getCantidad();
             facturaString.append(String.format("%s x%d\n", tipoEntrada, cantidad));
             totalAPagar += precio * cantidad;
+
+            // Actualizar la cantidad disponible en la localidad correspondiente
+            String tipoButaca = tipoEntrada.split(" - ")[0];
+            Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
+            for (Localidad localidad : eventoSeleccionado.getListaLocalidades()) {
+                if (localidad.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
+                    if (tipoButaca.equals("General")) {
+                        localidad.setGeneralCantidad(localidad.getGeneralCantidad() - cantidad);
+                    } else if (tipoButaca.equals("Platinum")) {
+                        localidad.setPlatinumCantidad(localidad.getPlatinumCantidad() - cantidad);
+                    } else if (tipoButaca.equals("VIP")) {
+                        localidad.setVipCantidad(localidad.getVipCantidad() - cantidad);
+                    }
+                    break;
+                }
+            }
         }
 
         facturaString.append("\nTotal a Pagar: $").append(String.format("%.2f", totalAPagar)).append("\n");
@@ -1166,7 +1179,9 @@ public class VentanaEventos {
         JOptionPane.showMessageDialog(null, facturaString.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
 
         limpiarCarrito();
+        actualizarComboBox4(usuario.listaEventos.getElementAt(list7.getSelectedIndex()));
     }
+
 
     private void limpiarCarrito(){
         usuario.modeloCarrito.clear();
@@ -1179,6 +1194,14 @@ public class VentanaEventos {
             registroPanel.setEnabledAt(i, false);
         }
     }
+
+    private void agregarBoleto(Factura item, Evento eventoSeleccionado) {
+        int idBoleto = usuario.getNextBoletoId();
+        Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), item);
+        usuario.agregarBoleto(boleto);
+    }
+
+
 
 
 
