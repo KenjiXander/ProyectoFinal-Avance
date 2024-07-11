@@ -105,6 +105,7 @@ public class VentanaEventos {
     private JButton agregarPublicidadButton;
     private JList list2;
     private JComboBox comboBox1;
+    private JButton limpiarButton;
 
 
     private Evento evento = new Evento();
@@ -322,43 +323,95 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreLocalidad = nombreLoca.getText();
-                int capacidadLocalidad = (int) spinnerLocalidad.getValue();
+                int capacidadLocalidad;
+
+                try {
+                    capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
+                    if (capacidadLocalidad <= 0) {
+                        JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "La capacidad debe ser un número válido.");
+                    return;
+                }
+
+                for (Localidad loc : evento.listaLocalidades) {
+                    if (loc.getNombreLocalidad().equalsIgnoreCase(nombreLocalidad)) {
+                        JOptionPane.showMessageDialog(null, "Ya existe una localidad con ese nombre.");
+                        return;
+                    }
+                }
 
                 Localidad nuevaLocalidad = new Localidad(nombreLocalidad, capacidadLocalidad);
                 evento.agregarLocalidad(nuevaLocalidad);
-                Localidad localidad = new Localidad();
-                localidad.actualizarListaLocalidades(listaLocalidad);
+                actualizarListaLocalidades();
                 limpiarCamposLocalidad();
                 actualizarComboBoxLocalidades();
-
             }
         });
         listaLocalidad.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = listaLocalidad.getSelectedIndex();
-
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
                     Localidad localidadSeleccionada = evento.listaLocalidades.get(indiceSeleccionado);
                     nombreLoca.setText(localidadSeleccionada.getNombreLocalidad());
                     spinnerLocalidad.setValue(localidadSeleccionada.getCapacidadLocalidad());
                 }
             }
         });
+        localidadEventoCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem();
+                for (Localidad loc : evento.listaLocalidades) {
+                    if (loc.getNombreLocalidad().equals(nombreSeleccionado)) {
+                        aforoEvento.setValue(loc.getCapacidadLocalidad());
+                        break;
+                    }
+                }
+            }
+        });
+
+//        modificarLocalidadButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int indiceSeleccionado = listaLocalidad.getSelectedIndex();
+//                if (indiceSeleccionado != -1) {
+//                    String nombreLocalidad = nombreLoca.getText();
+//                    int capacidadLocalidad = (int) spinnerLocalidad.getValue();
+//
+//                    Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad);
+//                    evento.listaLocalidades.set(indiceSeleccionado, localidadModificada);
+//                    actualizarListaLocalidades();
+//                    limpiarCamposLocalidad();
+//                }
+//            }
+//        });
         modificarLocalidadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = listaLocalidad.getSelectedIndex();
-
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
                     String nombreLocalidad = nombreLoca.getText();
-                    int capacidadLocalidad = (int) spinnerLocalidad.getValue();
+                    int capacidadLocalidad;
+
+                    // Verificación de que la capacidad sea un número válido
+                    try {
+                        capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
+                        if (capacidadLocalidad <= 0) {
+                            JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
+                            return;
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La capacidad debe ser un número válido.");
+                        return;
+                    }
 
                     Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad);
                     evento.listaLocalidades.set(indiceSeleccionado, localidadModificada);
-
-                    Localidad localidad = new Localidad();
-                    localidad.actualizarListaLocalidades(listaLocalidad);
+                    actualizarListaLocalidades();
                     limpiarCamposLocalidad();
                 }
             }
@@ -367,9 +420,12 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem();
-                Localidad localidad = new Localidad();
-                int capacidad = localidad.obtenerCapacidadEvento(nombreSeleccionado);
-                aforoEvento.setValue(capacidad);
+                for (Localidad loc : evento.listaLocalidades) {
+                    if (loc.getNombreLocalidad().equals(nombreSeleccionado)) {
+                        aforoEvento.setValue(loc.getCapacidadLocalidad());
+                        break;
+                    }
+                }
             }
         });
         agregarEventoButton.addActionListener(new ActionListener() {
@@ -641,6 +697,12 @@ public class VentanaEventos {
                 }
             }
         });
+        limpiarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarCamposLocalidad();
+            }
+        });
     }
 
 
@@ -672,6 +734,14 @@ public class VentanaEventos {
         }
     }
 
+
+    private void actualizarListaLocalidades() {
+        DefaultListModel<Localidad> listModel = new DefaultListModel<>();
+        for (Localidad localidad : evento.listaLocalidades) {
+            listModel.addElement(localidad);
+        }
+        listaLocalidad.setModel(listModel);
+    }
 
     private void limpiarCamposLocalidad(){
         nombreLoca.setText("");
