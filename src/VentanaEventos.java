@@ -139,10 +139,13 @@ public class VentanaEventos {
         evento.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa",1000,true,500,50,true,300,100,true,200,200));
         evento.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui",2000,true,1500,60,true,300,120,true,200,220));
         evento.listaLocalidades.add(new Localidad("Paseo San Francisco",500,true,350,50,true,100,100,true,50,200));
-        //usuario.listaEventos.addElement(new Evento(1,"Morat en Quito","Quito","Estadio Olimpico Atahualpa","15:30","15/12/2024","Pop",1000,"Morat"));
         Evento eventoMorat = new Evento(1, "Morat en Quito", "Quito", "Estadio Olimpico Atahualpa", "15:30", "15/12/2024", "Pop", 1000, "Morat");
         eventoMorat.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", 1000, true, 500, 50, true, 300, 100, true, 200, 200));
         usuario.listaEventos.addElement(eventoMorat);
+        Evento eventoFalling = new Evento(2, "Falling in reverse en Quito", "Quito", "Coliseo General Rumiñahui", "11:30", "17/12/2024", "Metal", 2000, "Falling in reverse");
+        eventoFalling.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui", 2000, true, 1500, 50, true, 300, 100, true, 200, 200));
+        usuario.listaEventos.addElement(eventoFalling);
+
 
         actualizarListaArtistas();
         actualizarComboBoxArtistas();
@@ -699,6 +702,19 @@ public class VentanaEventos {
                         return;
                     }
 
+                    // Verificar si el evento ya existe
+                    for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
+                        Evento eventoExistente = usuario.listaEventos.getElementAt(i);
+                        if (eventoExistente.getNombreEvento().equalsIgnoreCase(nombre)) {
+                            JOptionPane.showMessageDialog(null, "Ya existe un evento con ese nombre.");
+                            return;
+                        }
+                        if (eventoExistente.getFechaEvento().equals(fecha)) {
+                            JOptionPane.showMessageDialog(null, "Ya existe un evento programado para esta fecha.");
+                            return;
+                        }
+                    }
+
                     Evento eventoAgregar = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista);
                     eventoAgregar.listaLocalidades.add(localidadSeleccionada);
                     usuario.agregarEventoGestionado(eventoAgregar);
@@ -904,38 +920,110 @@ public class VentanaEventos {
                 int indiceSeleccionado = list4.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
                     Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
-                    eventoSeleccionado.setNombreEvento(nombreEvento.getText());
-                    eventoSeleccionado.setIdEvento(Integer.parseInt(idEvento.getText()));
-                    eventoSeleccionado.setHoraEvento(horaEvento.getText());
-                    eventoSeleccionado.setFechaEvento(fechaEvento.getText());
-                    eventoSeleccionado.setGeneroMusical((String) comboBox5.getSelectedItem());
-                    eventoSeleccionado.setCiudadEvento((String) ciudadEventoCombo.getSelectedItem());
-                    eventoSeleccionado.setLocalidadEvento((String) localidadEventoCombo.getSelectedItem());
-                    eventoSeleccionado.setAforoEvento((Integer) aforoEvento.getValue());
-                    eventoSeleccionado.setArtistaEvento((String) artistaCombo.getSelectedItem());
+                    String nuevoNombre = nombreEvento.getText();
+                    String nuevaCiudad = ciudadEventoCombo.getSelectedItem().toString();
+                    String nuevaLocalidad = localidadEventoCombo.getSelectedItem().toString();
+                    String nuevaHora = horaEvento.getText();
+                    String nuevaFecha = fechaEvento.getText();
+                    String nuevoGenero = comboBox5.getSelectedItem().toString();
+                    int nuevoAforo = (int) aforoEvento.getValue();
+                    String nuevoArtista = artistaCombo.getSelectedItem().toString();
+
+                    if (!nuevoNombre.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "El nombre del evento solo puede contener letras y espacios.");
+                        return;
+                    }
+
+                    if (!idEvento.getText().matches("\\d+")) {
+                        JOptionPane.showMessageDialog(null, "El ID del evento solo puede contener números.");
+                        return;
+                    }
+
+                    if (!nuevaHora.matches("^([01]?[0-9]|2[0-3]):([0-5][0-9])$")) {
+                        JOptionPane.showMessageDialog(null, "El formato de hora debe ser hh:mm con valores válidos.");
+                        return;
+                    }
+
+                    if (!nuevaFecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de fecha debe ser dd/mm/aaaa.");
+                        return;
+                    }
+
+                    LocalDate fechaActual = LocalDate.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate fechaEvento = LocalDate.parse(nuevaFecha, formatter);
+
+                    if (fechaEvento.isBefore(fechaActual)) {
+                        JOptionPane.showMessageDialog(null, "La fecha del evento no puede ser menor a la fecha actual.");
+                        return;
+                    }
+
+                    if (fechaEvento.isAfter(fechaActual.plusYears(10))) {
+                        JOptionPane.showMessageDialog(null, "La fecha del evento no puede ser mayor a 10 años a partir del año actual.");
+                        return;
+                    }
+
+                    if (comboBox5.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger un género musical para el evento.");
+                        return;
+                    }
+
+                    if (ciudadEventoCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger una ciudad para el evento.");
+                        return;
+                    }
+
+                    if (localidadEventoCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger una localidad para el evento.");
+                        return;
+                    }
+
+                    if (artistaCombo.getSelectedIndex() == 0) {
+                        JOptionPane.showMessageDialog(null, "Debes escoger un artista para el evento.");
+                        return;
+                    }
 
                     Localidad localidadSeleccionada = null;
                     for (Localidad loc : evento.listaLocalidades) {
-                        if (loc.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
+                        if (loc.getNombreLocalidad().equals(nuevaLocalidad)) {
                             localidadSeleccionada = loc;
                             break;
                         }
                     }
 
-                    if (localidadSeleccionada != null) {
-                        localidadSeleccionada.setGeneral(generalCheck.isSelected());
-                        localidadSeleccionada.setGeneralCantidad(Integer.parseInt(generalField.getText()));
-                        localidadSeleccionada.setGeneralPrecio(Double.parseDouble(generalPrecio.getText()));
-                        localidadSeleccionada.setPlatinum(platinumCheck.isSelected());
-                        localidadSeleccionada.setPlatinumCantidad(Integer.parseInt(platinumField.getText()));
-                        localidadSeleccionada.setPlatinumPrecio(Double.parseDouble(platinumPrecio.getText()));
-                        localidadSeleccionada.setVip(vipCheck.isSelected());
-                        localidadSeleccionada.setVipCantidad(Integer.parseInt(vipField.getText()));
-                        localidadSeleccionada.setVipPrecio(Double.parseDouble(vipPrecio.getText()));
-
-                        eventoSeleccionado.getListaLocalidades().clear();
-                        eventoSeleccionado.getListaLocalidades().add(localidadSeleccionada);
+                    if (localidadSeleccionada == null) {
+                        JOptionPane.showMessageDialog(null, "La localidad seleccionada no es válida.");
+                        return;
                     }
+
+                    int totalButacas = localidadSeleccionada.getGeneralCantidad() + localidadSeleccionada.getPlatinumCantidad() + localidadSeleccionada.getVipCantidad();
+
+                    if (totalButacas != nuevoAforo) {
+                        JOptionPane.showMessageDialog(null, "Debes asignar todos los asientos disponibles sin pasarte del total.");
+                        return;
+                    }
+
+                    // Verificar si el evento ya existe con el nuevo nombre o fecha
+                    for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
+                        Evento eventoExistente = usuario.listaEventos.getElementAt(i);
+                        if (i != indiceSeleccionado && (eventoExistente.getNombreEvento().equalsIgnoreCase(nuevoNombre) || eventoExistente.getFechaEvento().equals(nuevaFecha))) {
+                            JOptionPane.showMessageDialog(null, "Ya existe un evento con ese nombre o fecha.");
+                            return;
+                        }
+                    }
+
+                    eventoSeleccionado.setNombreEvento(nuevoNombre);
+                    eventoSeleccionado.setCiudadEvento(nuevaCiudad);
+                    eventoSeleccionado.setLocalidadEvento(nuevaLocalidad);
+                    eventoSeleccionado.setHoraEvento(nuevaHora);
+                    eventoSeleccionado.setFechaEvento(nuevaFecha);
+                    eventoSeleccionado.setGeneroMusical(nuevoGenero);
+                    eventoSeleccionado.setAforoEvento(nuevoAforo);
+                    eventoSeleccionado.setArtistaEvento(nuevoArtista);
+
+                    Localidad localidadModificada = new Localidad(nuevaLocalidad, localidadSeleccionada.getCapacidadLocalidad(), localidadSeleccionada.isGeneral(), localidadSeleccionada.getGeneralCantidad(), localidadSeleccionada.getGeneralPrecio(), localidadSeleccionada.isPlatinum(), localidadSeleccionada.getPlatinumCantidad(), localidadSeleccionada.getPlatinumPrecio(), localidadSeleccionada.isVip(), localidadSeleccionada.getVipCantidad(), localidadSeleccionada.getVipPrecio());
+                    eventoSeleccionado.getListaLocalidades().clear();
+                    eventoSeleccionado.getListaLocalidades().add(localidadModificada);
 
                     usuario.listaEventos.set(indiceSeleccionado, eventoSeleccionado);
                     JOptionPane.showMessageDialog(null, "Se ha modificado el evento");
@@ -1113,7 +1201,7 @@ public class VentanaEventos {
                         registroPanel.setEnabledAt(i, true);
                     }
                 } else {
-                    for (int i = 2; i < 5; i++) {
+                    for (int i = 2; i < 4; i++) {
                         registroPanel.setEnabledAt(i, true);
                     }
                 }
