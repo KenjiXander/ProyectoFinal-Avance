@@ -702,7 +702,6 @@ public class VentanaEventos {
                         return;
                     }
 
-                    // Verificar si el evento ya existe
                     for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
                         Evento eventoExistente = usuario.listaEventos.getElementAt(i);
                         if (eventoExistente.getNombreEvento().equalsIgnoreCase(nombre)) {
@@ -1003,7 +1002,6 @@ public class VentanaEventos {
                         return;
                     }
 
-                    // Verificar si el evento ya existe con el nuevo nombre o fecha
                     for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
                         Evento eventoExistente = usuario.listaEventos.getElementAt(i);
                         if (i != indiceSeleccionado && (eventoExistente.getNombreEvento().equalsIgnoreCase(nuevoNombre) || eventoExistente.getFechaEvento().equals(nuevaFecha))) {
@@ -1410,7 +1408,6 @@ public class VentanaEventos {
             facturaString.append(String.format("%s x%d\n", tipoEntrada, cantidad));
             totalAPagar += precio * cantidad;
 
-            // Actualizar la cantidad disponible en la localidad correspondiente
             String tipoButaca = tipoEntrada.split(" - ")[0];
             Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
             for (Localidad localidad : eventoSeleccionado.getListaLocalidades()) {
