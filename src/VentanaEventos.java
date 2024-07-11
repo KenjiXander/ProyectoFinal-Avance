@@ -110,6 +110,9 @@ public class VentanaEventos {
     private JButton limpiarButton2;
     private JList list3;
     private JButton limpiarButton3;
+    private JButton eliminarButton;
+    private JButton modificarButton;
+    private JButton limpiarButton4;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
@@ -737,6 +740,10 @@ public class VentanaEventos {
         comprarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (usuario.carrito.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Debes seleccionar al menos una entrada antes de comprar.");
+                    return;
+                }
                 generarFactura();
                 Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
                 for (Factura item : usuario.carrito) {
@@ -812,12 +819,11 @@ public class VentanaEventos {
         agregarPublicidadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int indiceSeleccionado = list1.getSelectedIndex();
-                if (indiceSeleccionado != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
-                    String idEventoSeleccionado = String.valueOf(eventoSeleccionado.getIdEvento());
-                    String plataformaSeleccionada = comboBox1.getSelectedItem().toString();
-                    int presupuestoUsado = (int) spinner2.getValue();
+                int selectedIndex = list1.getSelectedIndex();
+                if (selectedIndex != -1) {
+                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndex);
+                    String plataforma = comboBox1.getSelectedItem().toString();
+                    int presupuesto = (int) spinner2.getValue();
                     String fechaInicio = textField2.getText();
                     String fechaCulminacion = textField5.getText();
 
@@ -830,13 +836,14 @@ public class VentanaEventos {
                         return;
                     }
 
-                    String publicidad = String.format("Evento: %s - Plataforma: %s - Presupuesto: %d - Fecha de inicio: %s - Fecha de culminación: %s",
-                            idEventoSeleccionado, plataformaSeleccionada, presupuestoUsado, fechaInicio, fechaCulminacion);
-                    usuario.agregarModeloCarrito(publicidad);
-                    list2.setModel(usuario.modeloCarrito);
+                    Publicidad nuevaPublicidad = new Publicidad(eventoSeleccionado.getIdEvento(), plataforma, presupuesto, fechaInicio, fechaCulminacion);
+                    eventoSeleccionado.agregarPublicidad(nuevaPublicidad);
+                    actualizarListaPublicidad(eventoSeleccionado);
+                    limpiarCamposPublicidad();
                 }
             }
         });
+
         list4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -950,6 +957,93 @@ public class VentanaEventos {
                 limpiarNavegacion();
             }
         });
+        list2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndexEvento = list1.getSelectedIndex();
+                int selectedIndexPublicidad = list2.getSelectedIndex();
+                if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
+                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    Publicidad publicidadSeleccionada = eventoSeleccionado.getListaPublicidades().get(selectedIndexPublicidad);
+                    comboBox1.setSelectedItem(publicidadSeleccionada.getPlataforma());
+                    spinner2.setValue(publicidadSeleccionada.getPresupuesto());
+                    textField2.setText(publicidadSeleccionada.getFechaInicio());
+                    textField5.setText(publicidadSeleccionada.getFechaCulminacion());
+                }
+            }
+        });
+
+        list1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndex = list1.getSelectedIndex();
+                if (selectedIndex != -1) {
+                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndex);
+                    actualizarListaPublicidad(eventoSeleccionado);
+                }
+            }
+        });
+
+        limpiarButton4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarCamposPublicidad();
+            }
+        });
+        modificarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndexEvento = list1.getSelectedIndex();
+                int selectedIndexPublicidad = list2.getSelectedIndex();
+
+                if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
+                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    Publicidad publicidadSeleccionada = eventoSeleccionado.getListaPublicidades().get(selectedIndexPublicidad);
+
+                    String nuevaPlataforma = comboBox1.getSelectedItem().toString();
+                    int nuevoPresupuesto = (int) spinner2.getValue();
+                    String nuevaFechaInicio = textField2.getText();
+                    String nuevaFechaCulminacion = textField5.getText();
+
+                    if (!nuevaFechaInicio.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de la fecha de inicio debe ser dd/mm/aaaa.");
+                        return;
+                    }
+                    if (!nuevaFechaCulminacion.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                        JOptionPane.showMessageDialog(null, "El formato de la fecha de culminación debe ser dd/mm/aaaa.");
+                        return;
+                    }
+
+                    publicidadSeleccionada.setPlataforma(nuevaPlataforma);
+                    publicidadSeleccionada.setPresupuesto(nuevoPresupuesto);
+                    publicidadSeleccionada.setFechaInicio(nuevaFechaInicio);
+                    publicidadSeleccionada.setFechaCulminacion(nuevaFechaCulminacion);
+
+                    actualizarListaPublicidad(eventoSeleccionado);
+                    limpiarCamposPublicidad();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selecciona un evento y una publicidad para modificar.");
+                }
+            }
+        });
+
+        eliminarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndexEvento = list1.getSelectedIndex();
+                int selectedIndexPublicidad = list2.getSelectedIndex();
+
+                if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
+                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    eventoSeleccionado.getListaPublicidades().remove(selectedIndexPublicidad);
+                    actualizarListaPublicidad(eventoSeleccionado);
+                    limpiarCamposPublicidad();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selecciona un evento y una publicidad para eliminar.");
+                }
+            }
+        });
+
     }
 
 
@@ -1090,13 +1184,25 @@ public class VentanaEventos {
             for (Localidad localidad : evento.getListaLocalidades()) {
                 if (localidad.getNombreLocalidad().equalsIgnoreCase(localidadEvento)) {
                     if (localidad.isGeneral()) {
-                        model.addElement("General - $" + localidad.getGeneralPrecio() + " - Cantidad disponible: " + localidad.getGeneralCantidad());
+                        if (localidad.getGeneralCantidad() == 0) {
+                            model.addElement("General - $0.00 - Cantidad disponible: 0 (sold out)");
+                        } else {
+                            model.addElement("General - $" + localidad.getGeneralPrecio() + " - Cantidad disponible: " + localidad.getGeneralCantidad());
+                        }
                     }
                     if (localidad.isPlatinum()) {
-                        model.addElement("Platinum - $" + localidad.getPlatinumPrecio() + " - Cantidad disponible: " + localidad.getPlatinumCantidad());
+                        if (localidad.getPlatinumCantidad() == 0) {
+                            model.addElement("Platinum - $0.00 - Cantidad disponible: 0 (sold out)");
+                        } else {
+                            model.addElement("Platinum - $" + localidad.getPlatinumPrecio() + " - Cantidad disponible: " + localidad.getPlatinumCantidad());
+                        }
                     }
                     if (localidad.isVip()) {
-                        model.addElement("VIP - $" + localidad.getVipPrecio() + " - Cantidad disponible: " + localidad.getVipCantidad());
+                        if (localidad.getVipCantidad() == 0) {
+                            model.addElement("VIP - $0.00 - Cantidad disponible: 0 (sold out)");
+                        } else {
+                            model.addElement("VIP - $" + localidad.getVipPrecio() + " - Cantidad disponible: " + localidad.getVipCantidad());
+                        }
                     }
                     break;
                 }
@@ -1118,7 +1224,7 @@ public class VentanaEventos {
 
         String[] partes = tipoEntrada.split(" - ");
         double precio = Double.parseDouble(partes[1].substring(1));
-        int cantidadDisponible = Integer.parseInt(partes[2].split(": ")[1]);
+        int cantidadDisponible = Integer.parseInt(partes[2].split(": ")[1].split(" ")[0]);
 
         if (cantidad > cantidadDisponible) {
             JOptionPane.showMessageDialog(null, "No puedes ingresar una cantidad mayor a la disponible.");
@@ -1219,7 +1325,21 @@ public class VentanaEventos {
         navList.setModel(listaVacia);
     }
 
+    private void actualizarListaPublicidad(Evento eventoSeleccionado) {
+        DefaultListModel<Publicidad> model = new DefaultListModel<>();
+        for (Publicidad publicidad : eventoSeleccionado.getListaPublicidades()) {
+            model.addElement(publicidad);
+        }
+        list2.setModel(model);
+    }
 
+    private void limpiarCamposPublicidad(){
+        list1.setSelectedIndex(-1);
+        comboBox1.setSelectedIndex(0);
+        spinner2.setValue(0);
+        textField2.setText("");
+        textField5.setText("");
+    }
 
 
 

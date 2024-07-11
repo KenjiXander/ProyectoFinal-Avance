@@ -17,12 +17,14 @@ public class Evento {
     private int aforoEvento;
     private String artistaEvento;
     public List<Artista> listaArtistas;
-    public List<Localidad> listaLocalidades = new ArrayList<>();
+    public List<Localidad> listaLocalidades;
+    public List<Publicidad> listaPublicidades = new ArrayList<>();
 
 
     public Evento() {
         this.listaArtistas = new ArrayList<>();
         this.listaLocalidades = new ArrayList<>();
+        this.listaPublicidades = new ArrayList<>();
     }
 
     public void agregarArtista(Artista artista) {
@@ -31,6 +33,10 @@ public class Evento {
 
     public void agregarLocalidad(Localidad localidad) {
         listaLocalidades.add(localidad);
+    }
+
+    public void agregarPublicidad(Publicidad publicidad){
+        listaPublicidades.add(publicidad);
     }
 
     public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artistaEvento) {
@@ -138,6 +144,14 @@ public class Evento {
 
     public void setListaLocalidades(List<Localidad> listaLocalidades) {
         this.listaLocalidades = listaLocalidades;
+    }
+
+    public List<Publicidad> getListaPublicidades() {
+        return listaPublicidades;
+    }
+
+    public void setListaPublicidades(List<Publicidad> listaPublicidades) {
+        this.listaPublicidades = listaPublicidades;
     }
 
     @Override
