@@ -1,6 +1,6 @@
-package Arboles;
+package CapaEstructuras;
 
-import GestionEvento.Evento;
+import CapaNegocio.Evento;
 import java.util.List;
 
 public class Arbol {

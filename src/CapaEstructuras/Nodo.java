@@ -1,6 +1,6 @@
-package Arboles;
+package CapaEstructuras;
 
-import GestionEvento.Evento;
+import CapaNegocio.Evento;
 
 public class Nodo {
     private Evento evento;

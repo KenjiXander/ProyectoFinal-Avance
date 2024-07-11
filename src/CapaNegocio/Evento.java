@@ -1,6 +1,6 @@
-package GestionEvento;
+package CapaNegocio;
 
-import Arboles.OrdenarArbol;
+import CapaEstructuras.OrdenarArbol;
 
 import javax.swing.*;
 import java.util.ArrayList;

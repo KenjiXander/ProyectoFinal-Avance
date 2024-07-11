@@ -1,5 +1,4 @@
-package Ingreso;
-
+package CapaNegocio;
 
 public class Factura {
 
@@ -7,8 +6,6 @@ public class Factura {
     private int cantidad;
     private double precio;
 
-    public Factura() {
-    }
 
     public Factura(String tipoEntrada, int cantidad, double precio) {
         this.tipoEntrada = tipoEntrada;

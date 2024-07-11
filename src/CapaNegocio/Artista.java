@@ -1,4 +1,4 @@
-package GestionEvento;
+package CapaNegocio;
 
 public class Artista {
 

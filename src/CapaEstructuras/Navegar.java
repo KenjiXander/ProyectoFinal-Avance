@@ -1,6 +1,7 @@
-package GestionEvento;
+package CapaEstructuras;
 
-import Ingreso.Usuario;
+import CapaNegocio.Evento;
+import CapaNegocio.Usuario;
 
 import javax.swing.*;
 import java.util.ArrayList;

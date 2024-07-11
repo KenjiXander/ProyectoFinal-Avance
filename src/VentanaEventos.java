@@ -4,13 +4,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import GestionEvento.Evento;
-import Arboles.OrdenarArbol;
-import GestionEvento.Artista;
-import Ingreso.Factura;
-import GestionEvento.Localidad;
-import GestionEvento.Navegar;
-import Ingreso.Usuario;
+import CapaNegocio.Evento;
+import CapaNegocio.Artista;
+import CapaNegocio.Factura;
+import CapaNegocio.Localidad;
+import CapaEstructuras.Navegar;
+import CapaNegocio.Usuario;
 
 public class VentanaEventos {
     private JTabbedPane registroPanel;

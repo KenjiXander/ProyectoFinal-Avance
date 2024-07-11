@@ -1,4 +1,4 @@
-package GestionEvento;
+package CapaNegocio;
 
 import javax.swing.*;
 import java.util.ArrayList;
