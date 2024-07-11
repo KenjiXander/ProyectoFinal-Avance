@@ -127,9 +127,9 @@ public class VentanaEventos {
         usuario.listaUsuarios.add(new Usuario(2, "richi", "Richi", "richi", "direccion", "099485124", "Masculino"));
         usuario.listaUsuarios.add(new Usuario(3, "mati", "Mati", "mati", "direccion", "099485124", "Masculino"));
         usuario.listaUsuarios.add(new Usuario(4, "kenji", "Kenji", "kenji", "direccion", "099485124", "Masculino"));
-        evento.listaArtistas.add(new Artista("Morat", "Pop"));
-        evento.listaArtistas.add(new Artista("Falling in reverse", "Metal"));
-        evento.listaArtistas.add(new Artista("Nirvana", "Rock"));
+        evento.listaArtistas.add(new Artista("Morat"));
+        evento.listaArtistas.add(new Artista("Falling in reverse"));
+        evento.listaArtistas.add(new Artista("Nirvana"));
         evento.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa",1000,true,500,50,true,300,100,true,200,200));
         evento.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui",2000,true,1500,60,true,300,120,true,200,220));
         evento.listaLocalidades.add(new Localidad("Paseo San Francisco",500,true,350,50,true,100,100,true,50,200));
@@ -138,9 +138,7 @@ public class VentanaEventos {
         actualizarComboBoxArtistas();
         agregarUsuarioLista();
         actualizarComboBoxLocalidades();
-        actualizarComboBoxGeneros();
         actualizarListaLocalidades();
-
 
         desabilitarPestanas();
 
@@ -309,18 +307,16 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreArtista = textField18.getText();
-                String generoArtista = generoArtistaTF.getText();
 
-                if (!nombreArtista.isEmpty() && !generoArtista.isEmpty()) {
+                if (!nombreArtista.isEmpty()) {
                     for (Artista artista : evento.listaArtistas) {
-                        if (artista.getNombreArtista().equalsIgnoreCase(nombreArtista) &&
-                                artista.getGeneroArtista().equalsIgnoreCase(generoArtista)) {
+                        if (artista.getNombreArtista().equalsIgnoreCase(nombreArtista)) {
                             JOptionPane.showMessageDialog(null, "Ya existe un artista con ese nombre y género.");
                             return;
                         }
                     }
 
-                    Artista nuevoArtista = new Artista(nombreArtista, generoArtista);
+                    Artista nuevoArtista = new Artista(nombreArtista);
                     evento.agregarArtista(nuevoArtista);
 
                     DefaultListModel<Artista> listModel = new DefaultListModel<>();
@@ -330,9 +326,7 @@ public class VentanaEventos {
                     list6.setModel(listModel);
 
                     actualizarComboBoxArtistas();
-                    actualizarComboBoxGeneros();
                     textField18.setText("");
-                    generoArtistaTF.setText("");
                 } else {
                     JOptionPane.showMessageDialog(null, "Por favor ingresa el nombre del artista y su género musical.");
                 }
@@ -346,7 +340,6 @@ public class VentanaEventos {
                 if(indiceSeleccionado != -1){
                     Artista artistaSeleccionado = evento.listaArtistas.get(indiceSeleccionado);
                     textField18.setText(artistaSeleccionado.getNombreArtista());
-                    generoArtistaTF.setText(artistaSeleccionado.getGeneroArtista());
                 }
             }
         });
@@ -357,9 +350,8 @@ public class VentanaEventos {
 
                 if(indiceSeleccionado != -1){
                     String nombreArtista = textField18.getText();
-                    String generoArtista = generoArtistaTF.getText();
 
-                    Artista artistaModificado = new Artista(nombreArtista,generoArtista);
+                    Artista artistaModificado = new Artista(nombreArtista);
                     evento.listaArtistas.set(indiceSeleccionado, artistaModificado);
 
                     DefaultListModel<Artista> listModel = new DefaultListModel<>();
@@ -368,8 +360,6 @@ public class VentanaEventos {
                     }
                     list6.setModel(listModel);
                     textField18.setText("");
-                    generoArtistaTF.setText("");
-                    actualizarComboBoxGeneros();
                 }
             }
         });
@@ -904,7 +894,6 @@ public class VentanaEventos {
 
     private void limpiarCamposArtistas(){
         textField18.setText("");
-        generoArtistaTF.setText("");
 
     }
 
@@ -927,15 +916,6 @@ public class VentanaEventos {
         list9.setModel(listModel);
     }
 
-    private void actualizarComboBoxGeneros(){
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        model.addElement("Escoger género musical...");
-        for (Artista artista : evento.listaArtistas) {
-            model.addElement(artista.getGeneroArtista());
-        }
-        comboBox5.setModel(model);
-        generoMusicalNavCB.setModel(model);
-    }
 
 
     private void actualizarComboBoxLocalidades(){

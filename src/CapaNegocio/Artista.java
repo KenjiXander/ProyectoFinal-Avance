@@ -3,14 +3,12 @@ package CapaNegocio;
 public class Artista {
 
     private String nombreArtista;
-    private String generoArtista;
 
     public Artista() {
     }
 
-    public Artista(String nombreArtista, String generoArtista) {
+    public Artista(String nombreArtista) {
         this.nombreArtista = nombreArtista;
-        this.generoArtista = generoArtista;
     }
 
     public String getNombreArtista() {
@@ -21,17 +19,9 @@ public class Artista {
         this.nombreArtista = nombreArtista;
     }
 
-    public String getGeneroArtista() {
-        return generoArtista;
-    }
-
-    public void setGeneroArtista(String generoArtista) {
-        this.generoArtista = generoArtista;
-    }
 
     @Override
     public String toString() {
-        return "Nombre del artista: " + nombreArtista + "\n" +
-                " Genero del artista: " + generoArtista;
+        return "Nombre del artista: " + nombreArtista;
     }
 }
