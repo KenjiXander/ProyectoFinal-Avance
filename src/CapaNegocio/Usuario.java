@@ -18,7 +18,6 @@ public class Usuario {
     public List<Usuario> listaUsuarios = new ArrayList<>();
     public DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
     public List<Boleto> listaBoletos = new ArrayList<>();
-    private int nextBoletoId = 1;
 
     public Usuario() {
         this.carrito = new ArrayList<>();
@@ -44,22 +43,6 @@ public class Usuario {
 
     public void agregarBoleto(Boleto boleto){
         listaBoletos.add(boleto);
-    }
-
-    public List<Boleto> getListaBoletos() {
-        return listaBoletos;
-    }
-
-    public DefaultListModel<Evento> getListaEventos() {
-        return listaEventos;
-    }
-
-    public DefaultListModel<String> getModeloCarrito() {
-        return modeloCarrito;
-    }
-
-    public int getNextBoletoId() {
-        return nextBoletoId++;
     }
 
     public Usuario(int idUsuario, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {

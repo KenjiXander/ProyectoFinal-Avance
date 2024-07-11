@@ -41,23 +41,6 @@ public class Localidad {
         this.vipPrecio = vipPrecio;
     }
 
-    public void actualizarListaLocalidades(JList listaLocalidad){
-        DefaultListModel<Localidad> model = new DefaultListModel<>();
-        for(Localidad localidad:listaLocalidades){
-            model.addElement(localidad);
-        }
-        listaLocalidad.setModel(model);
-    }
-
-    public int obtenerCapacidadEvento(String nombreEvento){
-        for(Localidad localidad:listaLocalidades){
-            if(localidad.getNombreLocalidad().equals(nombreEvento)){
-                return localidad.getCapacidadLocalidad();
-            }
-        }
-        return 0;
-    }
-
     public String getNombreLocalidad() {
         return nombreLocalidad;
     }
