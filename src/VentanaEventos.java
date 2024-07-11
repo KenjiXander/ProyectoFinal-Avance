@@ -109,6 +109,7 @@ public class VentanaEventos {
     private JButton limpiarButton;
     private JButton limpiarButton1;
     private JButton limpiarButton2;
+    private JList list3;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
