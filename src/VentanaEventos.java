@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import CapaNegocio.*;
@@ -110,6 +109,7 @@ public class VentanaEventos {
     private JButton limpiarButton1;
     private JButton limpiarButton2;
     private JList list3;
+    private JButton limpiarButton3;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
@@ -944,6 +944,12 @@ public class VentanaEventos {
                 limpiarAgregarEvento();
             }
         });
+        limpiarButton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarNavegacion();
+            }
+        });
     }
 
 
@@ -1200,6 +1206,17 @@ public class VentanaEventos {
         int idBoleto = usuario.getNextBoletoId();
         Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), item);
         usuario.agregarBoleto(boleto);
+    }
+
+    private void limpiarNavegacion(){
+        DefaultListModel<Evento> listaVacia = new DefaultListModel<>();
+        nombreNavTF.setText("");
+        artistaNavCB.setSelectedIndex(0);
+        fechaNavTF.setText("");
+        generoMusicalNavCB.setSelectedIndex(0);
+        localidadNavCB.setSelectedIndex(0);
+        ciudadNavCB.setSelectedIndex(0);
+        navList.setModel(listaVacia);
     }
 
 
