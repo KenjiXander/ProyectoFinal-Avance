@@ -1141,6 +1141,13 @@
                 <properties>
                   <model>
                     <item value="Escoger género musical..."/>
+                    <item value="Metal"/>
+                    <item value="Rock"/>
+                    <item value="Pop"/>
+                    <item value="Electronica"/>
+                    <item value="Reggaeton"/>
+                    <item value="Rap"/>
+                    <item value="Jazz"/>
                   </model>
                 </properties>
               </component>
