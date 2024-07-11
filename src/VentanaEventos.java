@@ -1,7 +1,9 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +110,6 @@ public class VentanaEventos {
     private JButton limpiarButton;
     private JButton limpiarButton1;
     private JButton limpiarButton2;
-    private JList list3;
     private JButton limpiarButton3;
     private JButton eliminarButton;
     private JButton modificarButton;
@@ -116,7 +117,6 @@ public class VentanaEventos {
     private JButton eliminarArtistaButton;
     private JButton eliminarEventoButton;
     private JButton elminarLocalidadButton;
-    private JLabel usuarioCompradoEntradas;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
@@ -753,7 +753,6 @@ public class VentanaEventos {
                 for (Factura item : usuario.carrito) {
                     agregarBoleto(item, eventoSeleccionado);
                 }
-                actualizarListaEntradasCompradas();
             }
         });
 
@@ -845,6 +844,10 @@ public class VentanaEventos {
                         return;
                     }
 
+                    if (!verificarFechaInicio(fechaInicio) || !verificarFechaCulminacion(fechaCulminacion)) {
+                        return;
+                    }
+
                     Publicidad nuevaPublicidad = new Publicidad(eventoSeleccionado.getIdEvento(), plataforma, presupuesto, fechaInicio, fechaCulminacion);
                     eventoSeleccionado.agregarPublicidad(nuevaPublicidad);
                     actualizarListaPublicidad(eventoSeleccionado);
@@ -852,6 +855,7 @@ public class VentanaEventos {
                 }
             }
         });
+
 
         list4.addMouseListener(new MouseAdapter() {
             @Override
@@ -1077,13 +1081,16 @@ public class VentanaEventos {
                 evento.actualizarListaLocalidades(listaLocalidad, evento.listaLocalidades);
             }
         });
-        registroPanel.addChangeListener(new ChangeListener() {
+        textField2.addFocusListener(new FocusAdapter() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (registroPanel.getSelectedIndex() == 4) {
-                    System.out.println("Cargando la pestaña de entradas para: " + usuarioActual.getUsuario());
-                    actualizarListaEntradasCompradas();
-                }
+            public void focusLost(FocusEvent e) {
+                verificarFechaInicio(textField2.getText());
+            }
+        });
+        textField5.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                verificarFechaCulminacion(textField5.getText());
             }
         });
     }
@@ -1389,28 +1396,69 @@ public class VentanaEventos {
         textField5.setText("");
     }
 
-    private void actualizarListaEntradasCompradas() {
-        if (usuarioActual != null) {
-            usuarioCompradoEntradas.setText("El usuario " + usuarioActual.getUsuario() + " ha comprado las siguientes entradas:");
-            System.out.println("Actualizando lista de entradas compradas para el usuario: " + usuarioActual.getUsuario());
+    private boolean verificarFechaInicio(String fechaTexto) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate fechaIngresada = LocalDate.parse(fechaTexto, formatter);
+            LocalDate fechaActual = LocalDate.now();
 
-            DefaultListModel<String> model = new DefaultListModel<>();
-            for (Boleto boleto : usuario.getListaBoletos()) {
-                System.out.println("Revisando boleto: " + boleto.toString());
-                if (boleto.getIdUsuario() == usuarioActual.getIdUsuario()) {
-                    model.addElement(boleto.toString());
-                    System.out.println("Añadiendo boleto: " + boleto.toString());
-                }
+            if (fechaIngresada.isBefore(fechaActual)) {
+                JOptionPane.showMessageDialog(null, "No se puede ingresar una fecha anterior a la fecha actual.");
+                textField2.setText("");
+                textField2.requestFocus();
+                return false;
             }
-            list3.setModel(model);
+            return true;
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Use dd/MM/yyyy.");
+            textField2.setText("");
+            textField2.requestFocus();
+            return false;
         }
     }
 
+    private boolean verificarFechaCulminacion(String fechaTexto) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate fechaIngresada = LocalDate.parse(fechaTexto, formatter);
+            LocalDate fechaActual = LocalDate.now();
 
+            Evento eventoSeleccionado = getEventoSeleccionado();
+            if (eventoSeleccionado == null) {
+                JOptionPane.showMessageDialog(null, "Debe seleccionar un evento primero.");
+                textField5.setText("");
+                return false;
+            }
 
+            LocalDate fechaEvento = LocalDate.parse(eventoSeleccionado.getFechaEvento(), formatter);
 
+            if (fechaIngresada.isBefore(fechaActual)) {
+                JOptionPane.showMessageDialog(null, "No se puede ingresar una fecha anterior a la fecha actual.");
+                textField5.setText("");
+                textField5.requestFocus();
+                return false;
+            } else if (fechaIngresada.isAfter(fechaEvento)) {
+                JOptionPane.showMessageDialog(null, "No se puede ingresar una fecha posterior a la fecha del evento.");
+                textField5.setText("");
+                textField5.requestFocus();
+                return false;
+            }
+            return true;
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Use dd/MM/yyyy.");
+            textField5.setText("");
+            textField5.requestFocus();
+            return false;
+        }
+    }
 
-
+    private Evento getEventoSeleccionado() {
+        int selectedIndex = list1.getSelectedIndex();
+        if (selectedIndex != -1) {
+            return usuario.listaEventos.getElementAt(selectedIndex);
+        }
+        return null;
+    }
 
 
 
