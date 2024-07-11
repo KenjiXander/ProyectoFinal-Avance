@@ -1103,56 +1103,37 @@ public class VentanaEventos {
         String tipoEntrada = (String) comboBox4.getSelectedItem();
         int cantidad = (int) spinner1.getValue();
 
-        System.out.println("Tipo de entrada seleccionado: " + tipoEntrada);
-        System.out.println("Cantidad seleccionada: " + cantidad);
-
         if (tipoEntrada.equals("Escoge el tipo de entrada...") || cantidad <= 0) {
             JOptionPane.showMessageDialog(null, "Por favor selecciona un tipo de entrada y una cantidad válida.");
             return;
         }
 
-        try {
-            String[] partes = tipoEntrada.split(" - ");
-            System.out.println("Partes del tipo de entrada: " + Arrays.toString(partes));
+        String[] partes = tipoEntrada.split(" - ");
+        double precio = Double.parseDouble(partes[1].substring(1));
+        int cantidadDisponible = Integer.parseInt(partes[2].split(": ")[1]);
 
-            if (partes.length < 3) {
-                throw new IllegalArgumentException("El formato del tipo de entrada es incorrecto.");
-            }
-
-            double precio = Double.parseDouble(partes[1].substring(1));
-            int cantidadDisponible = Integer.parseInt(partes[2].split(": ")[1]);
-
-            System.out.println("Precio: " + precio);
-            System.out.println("Cantidad disponible: " + cantidadDisponible);
-
-            if (cantidad > cantidadDisponible) {
-                JOptionPane.showMessageDialog(null, "No puedes ingresar una cantidad mayor a la disponible.");
-                return;
-            }
-
-            usuario.agregarCarrito(new Factura(tipoEntrada, cantidad, precio));
-            actualizarCarrito();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error al procesar la cantidad o el precio: " + e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(null, "Error al procesar el tipo de entrada: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
+        if (cantidad > cantidadDisponible) {
+            JOptionPane.showMessageDialog(null, "No puedes ingresar una cantidad mayor a la disponible.");
+            return;
         }
+
+        // Guardar solo la parte necesaria en el carrito
+        String tipoButaca = partes[0] + " - $" + String.format("%.2f", precio);
+        usuario.agregarCarrito(new Factura(tipoButaca, cantidad, precio));
+        actualizarCarrito();
     }
 
 
 
 
-    private void actualizarCarrito(){
+    private void actualizarCarrito() {
         usuario.modeloCarrito.clear();
         double total = 0.0;
 
-        for(Factura entrada:usuario.carrito){
+        for (Factura entrada : usuario.carrito) {
             String tipoEntrada = entrada.getTipoEntrada();
             int cantidad = entrada.getCantidad();
-            String[] partes = tipoEntrada.split(" - ");
-            String item = partes[0] + " - $" + partes[1].substring(1) + " x" + cantidad;
+            String item = tipoEntrada + " x" + cantidad;
             usuario.agregarModeloCarrito(item);
             total += cantidad * entrada.getPrecio();
         }
@@ -1161,22 +1142,28 @@ public class VentanaEventos {
         textField19.setText(String.format("%.2f", total));
     }
 
-    private void generarFactura(){
+    private void generarFactura() {
         StringBuilder facturaString = new StringBuilder();
-        facturaString.append("***** Factura *****\n\n");
+        facturaString.append("***** FACTURA *****\n\n");
 
         facturaString.append("Informacion del Comprador:\n");
         facturaString.append("Nombre: Consumidor Final\n");
         facturaString.append("Cedula: 1111111111\n\n");
 
         facturaString.append("Detalles de la Compra:\n");
-        for(Factura item: usuario.carrito){
-            facturaString.append(item.getTipoEntrada()).append("\n");
+        double totalAPagar = 0.0;
+
+        for (Factura item : usuario.carrito) {
+            String tipoEntrada = item.getTipoEntrada();
+            double precio = item.getPrecio();
+            int cantidad = item.getCantidad();
+            facturaString.append(String.format("%s x%d\n", tipoEntrada, cantidad));
+            totalAPagar += precio * cantidad;
         }
 
-        facturaString.append("\nTotal a Pagar: $").append(textField19.getText()).append("\n");
+        facturaString.append("\nTotal a Pagar: $").append(String.format("%.2f", totalAPagar)).append("\n");
 
-        JOptionPane.showMessageDialog(null,facturaString.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, facturaString.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
 
         limpiarCarrito();
     }
