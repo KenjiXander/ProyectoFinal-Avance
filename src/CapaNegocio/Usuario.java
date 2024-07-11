@@ -18,6 +18,7 @@ public class Usuario {
     public List<Usuario> listaUsuarios = new ArrayList<>();
     public DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
     public List<Boleto> listaBoletos = new ArrayList<>();
+    public int nextBoletoId = 1;
 
     public Usuario() {
         this.carrito = new ArrayList<>();
@@ -45,6 +46,9 @@ public class Usuario {
         listaBoletos.add(boleto);
     }
 
+    public int getNextBoletoId(){
+        return nextBoletoId++;
+    }
     public Usuario(int idUsuario, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
         this.idUsuario = idUsuario;
         this.usuario = usuario;
