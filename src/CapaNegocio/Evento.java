@@ -17,7 +17,8 @@ public class Evento {
     private int aforoEvento;
     private String artistaEvento;
     public List<Artista> listaArtistas;
-    public List<Localidad> listaLocalidades;
+    public List<Localidad> listaLocalidades = new ArrayList<>();
+
 
     public Evento() {
         this.listaArtistas = new ArrayList<>();
@@ -42,6 +43,7 @@ public class Evento {
         this.generoMusical = generoMusical;
         this.aforoEvento = aforoEvento;
         this.artistaEvento = artistaEvento;
+        this.listaLocalidades = new ArrayList<>();
     }
 
     public void ordenarYMostrarResultados(List<Evento> resultados, JList<Evento> navList) {
@@ -128,6 +130,14 @@ public class Evento {
 
     public void setArtistaEvento(String artista) {
         this.artistaEvento = artistaEvento;
+    }
+
+    public List<Localidad> getListaLocalidades() {
+        return listaLocalidades;
+    }
+
+    public void setListaLocalidades(List<Localidad> listaLocalidades) {
+        this.listaLocalidades = listaLocalidades;
     }
 
     @Override

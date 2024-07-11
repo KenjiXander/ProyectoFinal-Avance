@@ -109,6 +109,7 @@ public class VentanaEventos {
     private JComboBox comboBox1;
     private JButton limpiarButton;
     private JButton limpiarButton1;
+    private JButton limpiarButton2;
 
 
     private Localidad localidad = new Localidad();
@@ -133,14 +134,20 @@ public class VentanaEventos {
         evento.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa",1000,true,500,50,true,300,100,true,200,200));
         evento.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui",2000,true,1500,60,true,300,120,true,200,220));
         evento.listaLocalidades.add(new Localidad("Paseo San Francisco",500,true,350,50,true,100,100,true,50,200));
+        //usuario.listaEventos.addElement(new Evento(1,"Morat en Quito","Quito","Estadio Olimpico Atahualpa","15:30","15/12/2024","Pop",1000,"Morat"));
+        Evento eventoMorat = new Evento(1, "Morat en Quito", "Quito", "Estadio Olimpico Atahualpa", "15:30", "15/12/2024", "Pop", 1000, "Morat");
+        eventoMorat.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", 1000, true, 500, 50, true, 300, 100, true, 200, 200));
+        usuario.listaEventos.addElement(eventoMorat);
 
         actualizarListaArtistas();
         actualizarComboBoxArtistas();
         agregarUsuarioLista();
         actualizarComboBoxLocalidades();
         actualizarListaLocalidades();
+        actualizarEventos();
 
         desabilitarPestanas();
+        comboBox4.setModel(new DefaultComboBoxModel<>());
 
         irARegistroButton.addActionListener(new ActionListener() {
             @Override
@@ -182,6 +189,14 @@ public class VentanaEventos {
                     JOptionPane.showMessageDialog(null, "El nombre solo puede contener letras y espacios.");
                     return;
                 }
+                if (!direccion.matches("[a-zA-Z ]+")) {
+                    JOptionPane.showMessageDialog(null, "La dirección solo puede contener letras y espacios.");
+                    return;
+                }
+                if (!usuarioField.matches("^[a-zA-Z][a-zA-Z0-9]*$")) {
+                    JOptionPane.showMessageDialog(null, "El usuario solo puede contener letras y números, y debe empezar con una letra.");
+                    return;
+                }
                 if (!telefono.matches("\\d+")) {
                     JOptionPane.showMessageDialog(null, "El teléfono solo puede contener números.");
                     return;
@@ -189,14 +204,14 @@ public class VentanaEventos {
 
                 boolean usuarioExistente = false;
                 for (Usuario user : usuario.listaUsuarios) {
-                    if (user.getUsuario().equals(usuario)) {
+                    if (user.getUsuario().equals(usuarioField)) {
                         usuarioExistente = true;
                         break;
                     }
                 }
 
                 if (usuarioExistente) {
-                    JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema");
+                    JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema.");
                 } else {
                     Usuario nuevoUsuario = new Usuario(contadorId++, usuarioField, nombre, contra, direccion, telefono, genero);
                     usuario.listaUsuarios.add(nuevoUsuario);
@@ -217,7 +232,7 @@ public class VentanaEventos {
         inicioDeSesionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(usuarioActual == null){
+                if (usuarioActual == null) {
                     registroPanel.setSelectedIndex(1);
                 }
             }
@@ -257,14 +272,51 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list9.getSelectedIndex();
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
+                    String nombre = textField20.getText();
+                    String usuarioField = textField21.getText();
+                    String contra = textField22.getText();
+                    String direccion = textField23.getText();
+                    String telefono = textField24.getText();
+                    String genero = comboBox6.getSelectedItem().toString();
+
+                    if (!nombre.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "El nombre solo puede contener letras y espacios.");
+                        return;
+                    }
+                    if (!direccion.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "La dirección solo puede contener letras y espacios.");
+                        return;
+                    }
+                    if (!usuarioField.matches("^[a-zA-Z][a-zA-Z0-9]*$")) {
+                        JOptionPane.showMessageDialog(null, "El usuario solo puede contener letras y números, y debe empezar con una letra.");
+                        return;
+                    }
+                    if (!telefono.matches("\\d+")) {
+                        JOptionPane.showMessageDialog(null, "El teléfono solo puede contener números.");
+                        return;
+                    }
+
+                    boolean usuarioExistente = false;
+                    for (Usuario user : usuario.listaUsuarios) {
+                        if (user.getUsuario().equals(usuarioField) && user != usuario.listaUsuarios.get(indiceSeleccionado)) {
+                            usuarioExistente = true;
+                            break;
+                        }
+                    }
+
+                    if (usuarioExistente) {
+                        JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema.");
+                        return;
+                    }
+
                     Usuario usuarioSeleccionado = usuario.listaUsuarios.get(indiceSeleccionado);
-                    usuarioSeleccionado.setNombre(textField20.getText());
-                    usuarioSeleccionado.setUsuario(textField21.getText());
-                    usuarioSeleccionado.setContra(textField22.getText());
-                    usuarioSeleccionado.setDireccion(textField23.getText());
-                    usuarioSeleccionado.setTelefono(textField24.getText());
-                    usuarioSeleccionado.setGenero(comboBox6.getSelectedItem().toString());
+                    usuarioSeleccionado.setNombre(nombre);
+                    usuarioSeleccionado.setUsuario(usuarioField);
+                    usuarioSeleccionado.setContra(contra);
+                    usuarioSeleccionado.setDireccion(direccion);
+                    usuarioSeleccionado.setTelefono(telefono);
+                    usuarioSeleccionado.setGenero(genero);
 
                     list9.setListData(usuario.listaUsuarios.toArray(new Usuario[0]));
                 }
@@ -278,31 +330,6 @@ public class VentanaEventos {
                 }
             }
         });
-//        agregarArtistaButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                String nombreArtista = textField18.getText();
-//                String generoArtista = generoArtistaTF.getText();
-//
-//                if(!nombreArtista.isEmpty() && !generoArtista.isEmpty()){
-//                    Artista nuevoArtista = new Artista(nombreArtista, generoArtista);
-//                    evento.agregarArtista(nuevoArtista);
-//
-//                    DefaultListModel<Artista> listModel = new DefaultListModel<>();
-//                    for(Artista artista: evento.listaArtistas){
-//                        listModel.addElement(artista);
-//                    }
-//                    list6.setModel(listModel);
-//
-//                    actualizarComboBoxArtistas();
-//                    actualizarComboBoxGeneros();
-//                    textField18.setText("");
-//                    generoArtistaTF.setText("");
-//                } else{
-//                    JOptionPane.showMessageDialog(null, "Por favor ingresa el nombre del artista y su género musical.");
-//                }
-//            }
-//        });
         agregarArtistaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -311,7 +338,7 @@ public class VentanaEventos {
                 if (!nombreArtista.isEmpty()) {
                     for (Artista artista : evento.listaArtistas) {
                         if (artista.getNombreArtista().equalsIgnoreCase(nombreArtista)) {
-                            JOptionPane.showMessageDialog(null, "Ya existe un artista con ese nombre y género.");
+                            JOptionPane.showMessageDialog(null, "Ya existe un artista con ese nombre.");
                             return;
                         }
                     }
@@ -328,7 +355,7 @@ public class VentanaEventos {
                     actualizarComboBoxArtistas();
                     textField18.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Por favor ingresa el nombre del artista y su género musical.");
+                    JOptionPane.showMessageDialog(null, "Por favor ingresa el nombre del artista.");
                 }
             }
         });
@@ -348,14 +375,19 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list6.getSelectedIndex();
 
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
                     String nombreArtista = textField18.getText();
+
+                    if (!nombreArtista.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "El nombre del artista solo puede contener letras y espacios.");
+                        return;
+                    }
 
                     Artista artistaModificado = new Artista(nombreArtista);
                     evento.listaArtistas.set(indiceSeleccionado, artistaModificado);
 
                     DefaultListModel<Artista> listModel = new DefaultListModel<>();
-                    for(Artista artista: evento.listaArtistas){
+                    for (Artista artista : evento.listaArtistas) {
                         listModel.addElement(artista);
                     }
                     list6.setModel(listModel);
@@ -369,6 +401,11 @@ public class VentanaEventos {
                 String nombreLocalidad = nombreLoca.getText();
                 int capacidadLocalidad;
 
+                if (!nombreLocalidad.matches("[a-zA-Z ]+")) {
+                    JOptionPane.showMessageDialog(null, "El nombre de la localidad solo puede contener letras y espacios.");
+                    return;
+                }
+
                 try {
                     capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
                     if (capacidadLocalidad <= 0) {
@@ -381,14 +418,52 @@ public class VentanaEventos {
                 }
 
                 boolean general = generalCheck.isSelected();
-                int generalCantidad = general ? Integer.parseInt(generalField.getText()) : 0;
-                double generalPrecioValor = general ? Double.parseDouble(generalPrecio.getText()) : 0.0;
+                int generalCantidad;
+                double generalPrecioValor;
+                if (general) {
+                    try {
+                        generalCantidad = Integer.parseInt(generalField.getText());
+                        generalPrecioValor = Double.parseDouble(generalPrecio.getText());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca general deben ser números válidos.");
+                        return;
+                    }
+                } else {
+                    generalCantidad = 0;
+                    generalPrecioValor = 0.0;
+                }
+
                 boolean platinum = platinumCheck.isSelected();
-                int platinumCantidad = platinum ? Integer.parseInt(platinumField.getText()) : 0;
-                double platinumPrecioValor = platinum ? Double.parseDouble(platinumPrecio.getText()) : 0.0;
+                int platinumCantidad;
+                double platinumPrecioValor;
+                if (platinum) {
+                    try {
+                        platinumCantidad = Integer.parseInt(platinumField.getText());
+                        platinumPrecioValor = Double.parseDouble(platinumPrecio.getText());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca platinum deben ser números válidos.");
+                        return;
+                    }
+                } else {
+                    platinumCantidad = 0;
+                    platinumPrecioValor = 0.0;
+                }
+
                 boolean vip = vipCheck.isSelected();
-                int vipCantidad = vip ? Integer.parseInt(vipField.getText()) : 0;
-                double vipPrecioValor = vip ? Double.parseDouble(vipPrecio.getText()) : 0.0;
+                int vipCantidad;
+                double vipPrecioValor;
+                if (vip) {
+                    try {
+                        vipCantidad = Integer.parseInt(vipField.getText());
+                        vipPrecioValor = Double.parseDouble(vipPrecio.getText());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca VIP deben ser números válidos.");
+                        return;
+                    }
+                } else {
+                    vipCantidad = 0;
+                    vipPrecioValor = 0.0;
+                }
 
                 for (Localidad loc : evento.listaLocalidades) {
                     if (loc.getNombreLocalidad().equalsIgnoreCase(nombreLocalidad)) {
@@ -428,34 +503,6 @@ public class VentanaEventos {
                 }
             }
         });
-//        localidadEventoCombo.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem();
-//                for (Localidad loc : evento.listaLocalidades) {
-//                    if (loc.getNombreLocalidad().equals(nombreSeleccionado)) {
-//                        aforoEvento.setValue(loc.getCapacidadLocalidad());
-//                        break;
-//                    }
-//                }
-//            }
-//        });
-
-//        modificarLocalidadButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                int indiceSeleccionado = listaLocalidad.getSelectedIndex();
-//                if (indiceSeleccionado != -1) {
-//                    String nombreLocalidad = nombreLoca.getText();
-//                    int capacidadLocalidad = (int) spinnerLocalidad.getValue();
-//
-//                    Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad);
-//                    evento.listaLocalidades.set(indiceSeleccionado, localidadModificada);
-//                    actualizarListaLocalidades();
-//                    limpiarCamposLocalidad();
-//                }
-//            }
-//        });
         modificarLocalidadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -464,7 +511,11 @@ public class VentanaEventos {
                     String nombreLocalidad = nombreLoca.getText();
                     int capacidadLocalidad;
 
-                    // Verificación de que la capacidad sea un número válido
+                    if (!nombreLocalidad.matches("[a-zA-Z ]+")) {
+                        JOptionPane.showMessageDialog(null, "El nombre de la localidad solo puede contener letras y espacios.");
+                        return;
+                    }
+
                     try {
                         capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
                         if (capacidadLocalidad <= 0) {
@@ -477,14 +528,52 @@ public class VentanaEventos {
                     }
 
                     boolean general = generalCheck.isSelected();
-                    int generalCantidad = general ? Integer.parseInt(generalField.getText()) : 0;
-                    double generalPrecioValor = general ? Double.parseDouble(generalPrecio.getText()) : 0.0;
+                    int generalCantidad;
+                    double generalPrecioValor;
+                    if (general) {
+                        try {
+                            generalCantidad = Integer.parseInt(generalField.getText());
+                            generalPrecioValor = Double.parseDouble(generalPrecio.getText());
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca general deben ser números válidos.");
+                            return;
+                        }
+                    } else {
+                        generalCantidad = 0;
+                        generalPrecioValor = 0.0;
+                    }
+
                     boolean platinum = platinumCheck.isSelected();
-                    int platinumCantidad = platinum ? Integer.parseInt(platinumField.getText()) : 0;
-                    double platinumPrecioValor = platinum ? Double.parseDouble(platinumPrecio.getText()) : 0.0;
+                    int platinumCantidad;
+                    double platinumPrecioValor;
+                    if (platinum) {
+                        try {
+                            platinumCantidad = Integer.parseInt(platinumField.getText());
+                            platinumPrecioValor = Double.parseDouble(platinumPrecio.getText());
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca platinum deben ser números válidos.");
+                            return;
+                        }
+                    } else {
+                        platinumCantidad = 0;
+                        platinumPrecioValor = 0.0;
+                    }
+
                     boolean vip = vipCheck.isSelected();
-                    int vipCantidad = vip ? Integer.parseInt(vipField.getText()) : 0;
-                    double vipPrecioValor = vip ? Double.parseDouble(vipPrecio.getText()) : 0.0;
+                    int vipCantidad;
+                    double vipPrecioValor;
+                    if (vip) {
+                        try {
+                            vipCantidad = Integer.parseInt(vipField.getText());
+                            vipPrecioValor = Double.parseDouble(vipPrecio.getText());
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca VIP deben ser números válidos.");
+                            return;
+                        }
+                    } else {
+                        vipCantidad = 0;
+                        vipPrecioValor = 0.0;
+                    }
 
                     Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
                     evento.listaLocalidades.set(indiceSeleccionado, localidadModificada);
@@ -500,7 +589,7 @@ public class VentanaEventos {
                 int valorActual = (int) spinnerLocalidad.getValue();
                 if (valorActual <= 0) {
                     JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
-                    spinnerLocalidad.setValue(1); // Restaurar el valor a 1 si se ingresa un número no positivo
+                    SwingUtilities.invokeLater(() -> spinnerLocalidad.setValue(1));
                 }
             }
         });
@@ -560,6 +649,11 @@ public class VentanaEventos {
                         return;
                     }
 
+                    if (fechaEvento.isAfter(fechaActual.plusYears(10))) {
+                        JOptionPane.showMessageDialog(null, "La fecha del evento no puede ser mayor a 10 años a partir del año actual.");
+                        return;
+                    }
+
                     if (comboBox5.getSelectedIndex() == 0) {
                         JOptionPane.showMessageDialog(null, "Debes escoger un género musical para el evento.");
                         return;
@@ -612,16 +706,19 @@ public class VentanaEventos {
             }
         });
 
+
+
         list7.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = list7.getSelectedIndex();
-                if(indiceSeleccionado != -1){
+                if (indiceSeleccionado != -1) {
                     Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
                     actualizarComboBox4(eventoSeleccionado);
                 }
             }
         });
+
         agregarAlCarritoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -772,9 +869,12 @@ public class VentanaEventos {
                         vipField.setText(String.valueOf(localidadSeleccionada.getVipCantidad()));
                         vipPrecio.setText(String.valueOf(localidadSeleccionada.getVipPrecio()));
                     }
+
+                    actualizarComboBox4(eventoSeleccionado);
                 }
             }
         });
+
 
         modificarEventoButton.addActionListener(new ActionListener() {
             @Override
@@ -831,6 +931,12 @@ public class VentanaEventos {
                 limpiarCamposArtistas();
             }
         });
+        limpiarButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarAgregarEvento();
+            }
+        });
     }
 
 
@@ -861,6 +967,19 @@ public class VentanaEventos {
             }
         }
     }
+
+
+    private void actualizarEventos(){
+        DefaultListModel<Evento> model = new DefaultListModel<>();
+
+        for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
+            model.addElement(usuario.listaEventos.getElementAt(i));
+        }
+        list4.setModel(usuario.listaEventos);
+        list7.setModel(usuario.listaEventos);
+        list1.setModel(usuario.listaEventos);
+    }
+
 
     private void actualizarListaArtistas(){
         DefaultListModel<Artista> listModel = new DefaultListModel<>();
@@ -951,23 +1070,35 @@ public class VentanaEventos {
 
     private void actualizarComboBox4(Evento evento) {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-
         model.addElement("Escoge el tipo de entrada...");
 
-        for (Localidad localidad : evento.listaLocalidades) {
-            if (localidad.isGeneral()) {
-                model.addElement("General - $" + localidad.getGeneralPrecio() + " - Cantidad disponible de entradas: " + localidad.getGeneralCantidad());
-            }
-            if (localidad.isPlatinum()) {
-                model.addElement("Platinum - $" + localidad.getPlatinumPrecio() + " - Cantidad disponible: " + localidad.getPlatinumCantidad());
-            }
-            if (localidad.isVip()) {
-                model.addElement("VIP - $" + localidad.getVipPrecio() + " - Cantidad disponible: " + localidad.getVipCantidad());
+        if (evento != null) {
+            String localidadEvento = evento.getLocalidadEvento();
+            for (Localidad localidad : evento.getListaLocalidades()) {
+                if (localidad.getNombreLocalidad().equalsIgnoreCase(localidadEvento)) {
+                    if (localidad.isGeneral()) {
+                        model.addElement("General - $" + localidad.getGeneralPrecio() + " - Cantidad disponible: " + localidad.getGeneralCantidad());
+                    }
+                    if (localidad.isPlatinum()) {
+                        model.addElement("Platinum - $" + localidad.getPlatinumPrecio() + " - Cantidad disponible: " + localidad.getPlatinumCantidad());
+                    }
+                    if (localidad.isVip()) {
+                        model.addElement("VIP - $" + localidad.getVipPrecio() + " - Cantidad disponible: " + localidad.getVipCantidad());
+                    }
+                    break;
+                }
             }
         }
 
         comboBox4.setModel(model);
     }
+
+
+
+
+
+
+
 
 
     private void agregarEntradaAlCarrito(){
