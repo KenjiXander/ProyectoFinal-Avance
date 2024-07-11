@@ -66,6 +66,44 @@ public class Evento {
         navList.setModel(model);
     }
 
+    public void eliminarEvento(int index, DefaultListModel<Evento> listaEventosModel) {
+        if (index != -1 && index < listaEventosModel.size()) {
+            listaEventosModel.remove(index);
+        }
+    }
+
+    public void actualizarListaEventos(JList<Evento> list, DefaultListModel<Evento> listaEventosModel) {
+        list.setModel(listaEventosModel);
+    }
+
+    public void eliminarArtista(int index, List<Artista> listaArtistas) {
+        if (index != -1 && index < listaArtistas.size()) {
+            listaArtistas.remove(index);
+        }
+    }
+
+    public void actualizarListaArtistas(JList<Artista> list, List<Artista> listaArtistas) {
+        DefaultListModel<Artista> model = new DefaultListModel<>();
+        for (Artista artista : listaArtistas) {
+            model.addElement(artista);
+        }
+        list.setModel(model);
+    }
+
+    public void eliminarLocalidad(int index, List<Localidad> listaLocalidades) {
+        if (index != -1 && index < listaLocalidades.size()) {
+            listaLocalidades.remove(index);
+        }
+    }
+
+    public void actualizarListaLocalidades(JList<Localidad> list, List<Localidad> listaLocalidades) {
+        DefaultListModel<Localidad> model = new DefaultListModel<>();
+        for (Localidad localidad : listaLocalidades) {
+            model.addElement(localidad);
+        }
+        list.setModel(model);
+    }
+
     public int getIdEvento() {
         return idEvento;
     }

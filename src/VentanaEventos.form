@@ -927,7 +927,7 @@
               </vspacer>
             </children>
           </grid>
-          <grid id="b11ff" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="b11ff" layout-manager="GridLayoutManager" row-count="7" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Artistas"/>
@@ -937,7 +937,7 @@
             <children>
               <vspacer id="9e5f1">
                 <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="e8a64" class="javax.swing.JLabel">
@@ -974,7 +974,7 @@
               </component>
               <component id="f4897" class="javax.swing.JList" binding="list6" default-binding="true">
                 <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
@@ -988,9 +988,17 @@
                   <text value="Limpiar"/>
                 </properties>
               </component>
+              <component id="a9c" class="javax.swing.JButton" binding="eliminarArtistaButton">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Eliminar"/>
+                </properties>
+              </component>
             </children>
           </grid>
-          <grid id="ef575" layout-manager="GridLayoutManager" row-count="15" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="ef575" layout-manager="GridLayoutManager" row-count="16" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="CrearEvento"/>
@@ -1008,7 +1016,7 @@
               </component>
               <vspacer id="b5678">
                 <constraints>
-                  <grid row="14" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="15" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="dfb1f" class="javax.swing.JTextField" binding="idEvento">
@@ -1198,9 +1206,17 @@
                   <text value="Limpiar"/>
                 </properties>
               </component>
+              <component id="f94a0" class="javax.swing.JButton" binding="eliminarEventoButton">
+                <constraints>
+                  <grid row="14" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Eliminar"/>
+                </properties>
+              </component>
             </children>
           </grid>
-          <grid id="85ca8" layout-manager="GridLayoutManager" row-count="13" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="85ca8" layout-manager="GridLayoutManager" row-count="14" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Localidades"/>
@@ -1218,7 +1234,7 @@
               </component>
               <vspacer id="ea75b">
                 <constraints>
-                  <grid row="12" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="13" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="abafb" class="javax.swing.JTextField" binding="nombreLoca">
@@ -1239,7 +1255,7 @@
               </component>
               <component id="6d63d" class="javax.swing.JList" binding="listaLocalidad">
                 <constraints>
-                  <grid row="11" column="0" row-span="1" col-span="6" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="12" column="0" row-span="1" col-span="6" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="50"/>
                   </grid>
                 </constraints>
@@ -1369,6 +1385,14 @@
                 </constraints>
                 <properties>
                   <text value="Agregar Localidad"/>
+                </properties>
+              </component>
+              <component id="36b01" class="javax.swing.JButton" binding="elminarLocalidadButton">
+                <constraints>
+                  <grid row="11" column="0" row-span="1" col-span="6" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Eliminar"/>
                 </properties>
               </component>
             </children>

@@ -113,6 +113,9 @@ public class VentanaEventos {
     private JButton eliminarButton;
     private JButton modificarButton;
     private JButton limpiarButton4;
+    private JButton eliminarArtistaButton;
+    private JButton eliminarEventoButton;
+    private JButton elminarLocalidadButton;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
@@ -1044,6 +1047,30 @@ public class VentanaEventos {
             }
         });
 
+        eliminarEventoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = list4.getSelectedIndex();
+                evento.eliminarEvento(selectedIndex, usuario.listaEventos);
+                evento.actualizarListaEventos(list4, usuario.listaEventos);
+            }
+        });
+        eliminarArtistaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = list6.getSelectedIndex();
+                evento.eliminarArtista(selectedIndex, evento.listaArtistas);
+                evento.actualizarListaArtistas(list6, evento.listaArtistas);
+            }
+        });
+        elminarLocalidadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = listaLocalidad.getSelectedIndex();
+                evento.eliminarLocalidad(selectedIndex, evento.listaLocalidades);
+                evento.actualizarListaLocalidades(listaLocalidad, evento.listaLocalidades);
+            }
+        });
     }
 
 
