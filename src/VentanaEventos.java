@@ -116,6 +116,7 @@ public class VentanaEventos {
     private JButton eliminarArtistaButton;
     private JButton eliminarEventoButton;
     private JButton elminarLocalidadButton;
+    private JLabel usuarioCompradoEntradas;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
@@ -752,8 +753,13 @@ public class VentanaEventos {
                 for (Factura item : usuario.carrito) {
                     agregarBoleto(item, eventoSeleccionado);
                 }
+                actualizarListaEntradasCompradas();
             }
         });
+
+
+
+
 
         buscarPorNombreButton.addActionListener(new ActionListener() {
             @Override
@@ -1071,26 +1077,36 @@ public class VentanaEventos {
                 evento.actualizarListaLocalidades(listaLocalidad, evento.listaLocalidades);
             }
         });
+        registroPanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (registroPanel.getSelectedIndex() == 4) {
+                    System.out.println("Cargando la pestaña de entradas para: " + usuarioActual.getUsuario());
+                    actualizarListaEntradasCompradas();
+                }
+            }
+        });
     }
 
 
-    private void verificarInicioSesion(String usuarioIngresado, String pass, boolean encontrado){
+    private void verificarInicioSesion(String usuarioIngresado, String pass, boolean encontrado) {
         for (Usuario us : usuario.listaUsuarios) {
             if (us.getUsuario().equals(usuarioIngresado) && us.getContra().equals(pass)) {
                 encontrado = true;
                 usuarioActual = us;
+                System.out.println("Usuario autenticado: " + usuarioActual.getUsuario());
                 JOptionPane.showMessageDialog(null, "Has iniciado sesion correctamente");
                 inicioValor.setText("Bienvenido " + us.getUsuario());
                 textField1.setText("");
                 passwordField1.setText("");
                 errorInicio.setText("");
 
-                if(usuarioActual.getUsuario().equals("admin")){
-                    for(int i = 2; i < registroPanel.getTabCount(); i++){
+                if (usuarioActual.getUsuario().equals("admin")) {
+                    for (int i = 2; i < registroPanel.getTabCount(); i++) {
                         registroPanel.setEnabledAt(i, true);
                     }
-                } else{
-                    for(int i = 2; i < 4; i++){
+                } else {
+                    for (int i = 2; i < 5; i++) {
                         registroPanel.setEnabledAt(i, true);
                     }
                 }
@@ -1101,6 +1117,8 @@ public class VentanaEventos {
             }
         }
     }
+
+
 
 
     private void actualizarEventos(){
@@ -1339,7 +1357,10 @@ public class VentanaEventos {
         int idBoleto = usuario.getNextBoletoId();
         Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), item);
         usuario.agregarBoleto(boleto);
+        System.out.println("Boleto agregado: " + boleto.toString());
     }
+
+
 
     private void limpiarNavegacion(){
         DefaultListModel<Evento> listaVacia = new DefaultListModel<>();
@@ -1367,6 +1388,29 @@ public class VentanaEventos {
         textField2.setText("");
         textField5.setText("");
     }
+
+    private void actualizarListaEntradasCompradas() {
+        if (usuarioActual != null) {
+            usuarioCompradoEntradas.setText("El usuario " + usuarioActual.getUsuario() + " ha comprado las siguientes entradas:");
+            System.out.println("Actualizando lista de entradas compradas para el usuario: " + usuarioActual.getUsuario());
+
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (Boleto boleto : usuario.getListaBoletos()) {
+                System.out.println("Revisando boleto: " + boleto.toString());
+                if (boleto.getIdUsuario() == usuarioActual.getIdUsuario()) {
+                    model.addElement(boleto.toString());
+                    System.out.println("Añadiendo boleto: " + boleto.toString());
+                }
+            }
+            list3.setModel(model);
+        }
+    }
+
+
+
+
+
+
 
 
 

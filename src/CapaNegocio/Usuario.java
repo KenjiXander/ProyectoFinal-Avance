@@ -13,12 +13,12 @@ public class Usuario {
     private String direccion;
     private String telefono;
     private String genero;
-    public List<Factura> carrito;
-    public DefaultListModel<String> modeloCarrito;
+    public List<Factura> carrito = new ArrayList<>();
+    public DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
     public List<Usuario> listaUsuarios = new ArrayList<>();
-    public DefaultListModel<Evento> listaEventos;
+    public DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
     public List<Boleto> listaBoletos = new ArrayList<>();
-    public int nextBoletoId = 1;
+    private int nextBoletoId = 1;
 
     public Usuario() {
         this.carrito = new ArrayList<>();
@@ -46,6 +46,21 @@ public class Usuario {
         listaBoletos.add(boleto);
     }
 
+    public List<Boleto> getListaBoletos() {
+        return listaBoletos;
+    }
+
+    public DefaultListModel<Evento> getListaEventos() {
+        return listaEventos;
+    }
+
+    public DefaultListModel<String> getModeloCarrito() {
+        return modeloCarrito;
+    }
+
+    public int getNextBoletoId() {
+        return nextBoletoId++;
+    }
 
     public Usuario(int idUsuario, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
         this.idUsuario = idUsuario;
@@ -56,8 +71,6 @@ public class Usuario {
         this.telefono = telefono;
         this.genero = genero;
     }
-
-
 
     public int getIdUsuario() {
         return idUsuario;
@@ -114,11 +127,6 @@ public class Usuario {
     public void setGenero(String genero) {
         this.genero = genero;
     }
-
-    public int getNextBoletoId(){
-        return nextBoletoId++;
-    }
-
 
     @Override
     public String toString() {

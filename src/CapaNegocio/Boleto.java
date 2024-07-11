@@ -17,39 +17,20 @@ public class Boleto {
         return idBoleto;
     }
 
-    public void setIdBoleto(int idBoleto) {
-        this.idBoleto = idBoleto;
-    }
-
     public int getIdUsuario() {
         return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
     }
 
     public int getIdEvento() {
         return idEvento;
     }
 
-    public void setIdEvento(int idEvento) {
-        this.idEvento = idEvento;
-    }
-
     public Factura getFactura() {
         return factura;
     }
 
-    public void setFactura(Factura factura) {
-        this.factura = factura;
-    }
-
     @Override
     public String toString() {
-        return "idBoleto: " + idBoleto + "\n" +
-                "Nombre de Usuario: " + idUsuario + "\n" +
-                "Evento: " + idEvento + "\n" +
-                "Factura: " + factura;
+        return "Evento ID: " + idEvento + ", Entrada: " + factura.getTipoEntrada() + ", Cantidad: " + factura.getCantidad() + ", Precio: $" + factura.getPrecio();
     }
 }
