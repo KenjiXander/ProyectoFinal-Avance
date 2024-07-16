@@ -4,13 +4,13 @@ public class Boleto {
     private int idBoleto;
     private int idUsuario;
     private int idEvento;
-    private Factura factura;
+    private DetalleFactura detalle;
 
-    public Boleto(int idBoleto, int idUsuario, int idEvento, Factura factura) {
+    public Boleto(int idBoleto, int idUsuario, int idEvento, DetalleFactura detalle) {
         this.idBoleto = idBoleto;
         this.idUsuario = idUsuario;
         this.idEvento = idEvento;
-        this.factura = factura;
+        this.detalle = detalle;
     }
 
     public int getIdBoleto() {
@@ -25,12 +25,12 @@ public class Boleto {
         return idEvento;
     }
 
-    public Factura getFactura() {
-        return factura;
+    public DetalleFactura getDetalle() {
+        return detalle;
     }
 
     @Override
     public String toString() {
-        return "Evento ID: " + idEvento + ", Entrada: " + factura.getTipoEntrada() + ", Cantidad: " + factura.getCantidad() + ", Precio: $" + factura.getPrecio();
+        return "Evento ID: " + idEvento + ", Entrada: " + detalle.getTipoAsiento() + ", Cantidad: " + detalle.getCantidad() + ", Precio: $" + detalle.getPrecio();
     }
 }

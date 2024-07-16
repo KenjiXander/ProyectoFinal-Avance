@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import CapaEstructuras.Lista;
 import CapaNegocio.*;
 import CapaEstructuras.Navegar;
 
@@ -117,9 +117,17 @@ public class VentanaEventos {
     private JButton eliminarArtistaButton;
     private JButton eliminarEventoButton;
     private JButton elminarLocalidadButton;
+    private JButton eliminarButton1;
+    private JButton limpiarButton5;
+    private JTextField textField8;
+    private JButton buscarPorFechaButton1;
+    private JComboBox comboBox3;
+    private JButton buscarPorUsuarioButton;
+    private JList list3;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
+    private Lista lista = new Lista();
     Navegar navegar = new Navegar(usuario.listaEventos);
 
 
@@ -128,11 +136,11 @@ public class VentanaEventos {
 
     public VentanaEventos() {
 
-        usuario.listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
-        usuario.listaUsuarios.add(new Usuario(1, "ray", "Ray", "ray", "direccion", "099485124", "Masculino"));
-        usuario.listaUsuarios.add(new Usuario(2, "richi", "Richi", "richi", "direccion", "099485124", "Masculino"));
-        usuario.listaUsuarios.add(new Usuario(3, "mati", "Mati", "mati", "direccion", "099485124", "Masculino"));
-        usuario.listaUsuarios.add(new Usuario(4, "kenji", "Kenji", "kenji", "direccion", "099485124", "Masculino"));
+        lista.listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
+        lista.listaUsuarios.add(new Usuario(1, "ray", "Ray", "ray", "direccion", "099485124", "Masculino"));
+        lista.listaUsuarios.add(new Usuario(2, "richi", "Richi", "richi", "direccion", "099485124", "Masculino"));
+        lista.listaUsuarios.add(new Usuario(3, "mati", "Mati", "mati", "direccion", "099485124", "Masculino"));
+        lista.listaUsuarios.add(new Usuario(4, "kenji", "Kenji", "kenji", "direccion", "099485124", "Masculino"));
         evento.listaArtistas.add(new Artista("Morat"));
         evento.listaArtistas.add(new Artista("Falling in reverse"));
         evento.listaArtistas.add(new Artista("Nirvana"));
@@ -147,6 +155,7 @@ public class VentanaEventos {
         usuario.listaEventos.addElement(eventoFalling);
 
 
+        actualizarComboBoxUsuarios();
         actualizarListaArtistas();
         actualizarComboBoxArtistas();
         agregarUsuarioLista();
@@ -211,7 +220,7 @@ public class VentanaEventos {
                 }
 
                 boolean usuarioExistente = false;
-                for (Usuario user : usuario.listaUsuarios) {
+                for (Usuario user : lista.listaUsuarios) {
                     if (user.getUsuario().equals(usuarioField)) {
                         usuarioExistente = true;
                         break;
@@ -222,10 +231,11 @@ public class VentanaEventos {
                     JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema.");
                 } else {
                     Usuario nuevoUsuario = new Usuario(contadorId++, usuarioField, nombre, contra, direccion, telefono, genero);
-                    usuario.listaUsuarios.add(nuevoUsuario);
+                    lista.listaUsuarios.add(nuevoUsuario);
                     JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
 
                     agregarUsuarioLista();
+                    actualizarComboBoxUsuarios();
 
                     textField3.setText("");
                     textField4.setText("");
@@ -236,6 +246,7 @@ public class VentanaEventos {
                 }
             }
         });
+
 
         inicioDeSesionButton.addActionListener(new ActionListener() {
             @Override
@@ -266,7 +277,7 @@ public class VentanaEventos {
                 int indiceSeleccionado = list9.getSelectedIndex();
 
                 if(indiceSeleccionado != -1){
-                    Usuario usuarioSeleccionado = usuario.listaUsuarios.get(indiceSeleccionado);
+                    Usuario usuarioSeleccionado = lista.listaUsuarios.get(indiceSeleccionado);
                     textField20.setText(usuarioSeleccionado.getNombre());
                     textField21.setText(usuarioSeleccionado.getUsuario());
                     textField22.setText(usuarioSeleccionado.getContra());
@@ -306,8 +317,8 @@ public class VentanaEventos {
                     }
 
                     boolean usuarioExistente = false;
-                    for (Usuario user : usuario.listaUsuarios) {
-                        if (user.getUsuario().equals(usuarioField) && user != usuario.listaUsuarios.get(indiceSeleccionado)) {
+                    for (Usuario user : lista.listaUsuarios) {
+                        if (user.getUsuario().equals(usuarioField) && user != lista.listaUsuarios.get(indiceSeleccionado)) {
                             usuarioExistente = true;
                             break;
                         }
@@ -318,7 +329,7 @@ public class VentanaEventos {
                         return;
                     }
 
-                    Usuario usuarioSeleccionado = usuario.listaUsuarios.get(indiceSeleccionado);
+                    Usuario usuarioSeleccionado = lista.listaUsuarios.get(indiceSeleccionado);
                     usuarioSeleccionado.setNombre(nombre);
                     usuarioSeleccionado.setUsuario(usuarioField);
                     usuarioSeleccionado.setContra(contra);
@@ -326,7 +337,7 @@ public class VentanaEventos {
                     usuarioSeleccionado.setTelefono(telefono);
                     usuarioSeleccionado.setGenero(genero);
 
-                    list9.setListData(usuario.listaUsuarios.toArray(new Usuario[0]));
+                    list9.setListData(lista.listaUsuarios.toArray(new Usuario[0]));
                 }
             }
         });
@@ -722,7 +733,7 @@ public class VentanaEventos {
                     list1.setModel(usuario.listaEventos);
                     limpiarAgregarEvento();
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al agregar evento: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error al agregar evento");
                 }
             }
         });
@@ -765,11 +776,13 @@ public class VentanaEventos {
                 }
                 generarFactura();
                 Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
-                for (Factura item : usuario.carrito) {
+                for (DetalleFactura item : usuario.carrito) {
                     agregarBoleto(item, eventoSeleccionado);
                 }
             }
         });
+
+
 
 
 
@@ -1179,11 +1192,50 @@ public class VentanaEventos {
                 verificarFechaCulminacion(textField5.getText());
             }
         });
+        eliminarButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarUsuarioSeleccionado();
+            }
+        });
+        limpiarButton5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textField20.setText("");
+                textField21.setText("");
+                textField22.setText("");
+                textField23.setText("");
+                textField24.setText("");
+                comboBox6.setSelectedIndex(0);
+            }
+        });
+        buscarPorFechaButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buscarFacturasPorFecha();
+            }
+        });
+
+    }
+
+    private void generarFactura() {
+        double totalAPagar = 0.0;
+        List<DetalleFactura> detalles = new ArrayList<>(usuario.carrito);
+
+        for (DetalleFactura item : detalles) {
+            totalAPagar += item.getPrecio() * item.getCantidad();
+        }
+
+        CabeceraFactura cabecera = new CabeceraFactura(usuario.getNextFacturaId(), usuarioActual, LocalDate.now(), totalAPagar, detalles);
+        usuario.agregarFactura(cabecera);
+        JOptionPane.showMessageDialog(null, cabecera.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
+        limpiarCarrito();
     }
 
 
+
     private void verificarInicioSesion(String usuarioIngresado, String pass, boolean encontrado) {
-        for (Usuario us : usuario.listaUsuarios) {
+        for (Usuario us : lista.listaUsuarios) {
             if (us.getUsuario().equals(usuarioIngresado) && us.getContra().equals(pass)) {
                 encontrado = true;
                 usuarioActual = us;
@@ -1274,7 +1326,7 @@ public class VentanaEventos {
 
     private void agregarUsuarioLista(){
         DefaultListModel<Usuario> listModel = new DefaultListModel<>();
-        for(Usuario user: usuario.listaUsuarios){
+        for(Usuario user: lista.listaUsuarios){
             listModel.addElement(user);
         }
         list9.setModel(listModel);
@@ -1370,16 +1422,19 @@ public class VentanaEventos {
         }
 
         String tipoButaca = partes[0] + " - $" + String.format("%.2f", precio);
-        usuario.agregarCarrito(new Factura(tipoButaca, cantidad, precio));
+        Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
+        DetalleFactura detalle = new DetalleFactura(eventoSeleccionado, tipoButaca, cantidad, precio);
+        usuario.agregarCarrito(detalle);
         actualizarCarrito();
     }
+
 
     private void actualizarCarrito() {
         usuario.modeloCarrito.clear();
         double total = 0.0;
 
-        for (Factura entrada : usuario.carrito) {
-            String tipoEntrada = entrada.getTipoEntrada();
+        for (DetalleFactura entrada : usuario.carrito) {
+            String tipoEntrada = entrada.getTipoAsiento();
             int cantidad = entrada.getCantidad();
             String item = tipoEntrada + " x" + cantidad;
             usuario.agregarModeloCarrito(item);
@@ -1390,47 +1445,6 @@ public class VentanaEventos {
         textField19.setText(String.format("%.2f", total));
     }
 
-    private void generarFactura() {
-        StringBuilder facturaString = new StringBuilder();
-        facturaString.append("***** FACTURA *****\n\n");
-
-        facturaString.append("Informacion del Comprador:\n");
-        facturaString.append("Nombre: Consumidor Final\n");
-        facturaString.append("Cedula: 1111111111\n\n");
-
-        facturaString.append("Detalles de la Compra:\n");
-        double totalAPagar = 0.0;
-
-        for (Factura item : usuario.carrito) {
-            String tipoEntrada = item.getTipoEntrada();
-            double precio = item.getPrecio();
-            int cantidad = item.getCantidad();
-            facturaString.append(String.format("%s x%d\n", tipoEntrada, cantidad));
-            totalAPagar += precio * cantidad;
-
-            String tipoButaca = tipoEntrada.split(" - ")[0];
-            Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
-            for (Localidad localidad : eventoSeleccionado.getListaLocalidades()) {
-                if (localidad.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
-                    if (tipoButaca.equals("General")) {
-                        localidad.setGeneralCantidad(localidad.getGeneralCantidad() - cantidad);
-                    } else if (tipoButaca.equals("Platinum")) {
-                        localidad.setPlatinumCantidad(localidad.getPlatinumCantidad() - cantidad);
-                    } else if (tipoButaca.equals("VIP")) {
-                        localidad.setVipCantidad(localidad.getVipCantidad() - cantidad);
-                    }
-                    break;
-                }
-            }
-        }
-
-        facturaString.append("\nTotal a Pagar: $").append(String.format("%.2f", totalAPagar)).append("\n");
-
-        JOptionPane.showMessageDialog(null, facturaString.toString(), "Factura de Compra", JOptionPane.INFORMATION_MESSAGE);
-
-        limpiarCarrito();
-        actualizarComboBox4(usuario.listaEventos.getElementAt(list7.getSelectedIndex()));
-    }
 
 
     private void limpiarCarrito(){
@@ -1445,12 +1459,13 @@ public class VentanaEventos {
         }
     }
 
-    private void agregarBoleto(Factura item, Evento eventoSeleccionado) {
+    private void agregarBoleto(DetalleFactura detalle, Evento eventoSeleccionado) {
         int idBoleto = usuario.getNextBoletoId();
-        Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), item);
+        Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), detalle);
         usuario.agregarBoleto(boleto);
         System.out.println("Boleto agregado: " + boleto.toString());
     }
+
 
 
 
@@ -1517,8 +1532,8 @@ public class VentanaEventos {
 
             LocalDate fechaEvento = LocalDate.parse(eventoSeleccionado.getFechaEvento(), formatter);
 
-            if (fechaIngresada.isBefore(fechaActual)) {
-                JOptionPane.showMessageDialog(null, "No se puede ingresar una fecha anterior a la fecha actual.");
+            if (fechaIngresada.isBefore(fechaActual) || fechaIngresada.isEqual(fechaActual)) {
+                JOptionPane.showMessageDialog(null, "No se puede ingresar una fecha anterior o igual a la fecha actual.");
                 textField5.setText("");
                 textField5.requestFocus();
                 return false;
@@ -1544,6 +1559,56 @@ public class VentanaEventos {
         }
         return null;
     }
+
+    private void eliminarUsuarioSeleccionado() {
+        int indiceSeleccionado = list9.getSelectedIndex();
+
+        if (indiceSeleccionado != -1) {
+            lista.listaUsuarios.remove(indiceSeleccionado);
+
+            DefaultListModel<Usuario> listModel = (DefaultListModel<Usuario>) list9.getModel();
+            listModel.remove(indiceSeleccionado);
+
+            textField20.setText("");
+            textField21.setText("");
+            textField22.setText("");
+            textField23.setText("");
+            textField24.setText("");
+            comboBox6.setSelectedIndex(0);
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecciona un usuario para eliminar.");
+        }
+    }
+
+    private void buscarFacturasPorFecha() {
+        String fechaTexto = textField8.getText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fecha;
+
+        try {
+            fecha = LocalDate.parse(fechaTexto, formatter);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Use dd/MM/yyyy.");
+            return;
+        }
+
+        List<CabeceraFactura> facturasPorFecha = usuario.getFacturasPorFecha(fecha);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (CabeceraFactura factura : facturasPorFecha) {
+            model.addElement(factura.toString());
+        }
+        list3.setModel(model);
+    }
+
+    private void actualizarComboBoxUsuarios() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (Usuario user : lista.listaUsuarios) {
+            model.addElement(user.getUsuario());
+        }
+        comboBox3.setModel(model);
+    }
+
+
 
 
 

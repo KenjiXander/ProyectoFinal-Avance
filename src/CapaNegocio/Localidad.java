@@ -17,8 +17,6 @@ public class Localidad {
     private int vipCantidad;
     private double vipPrecio;
 
-    public List<Localidad> listaLocalidades = new ArrayList<>();
-
     public Localidad() {
     }
 

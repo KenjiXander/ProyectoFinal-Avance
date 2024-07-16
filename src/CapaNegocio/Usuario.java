@@ -1,6 +1,7 @@
 package CapaNegocio;
 
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +14,13 @@ public class Usuario {
     private String direccion;
     private String telefono;
     private String genero;
-    public List<Factura> carrito = new ArrayList<>();
+    public List<DetalleFactura> carrito = new ArrayList<>();
     public DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
-    public List<Usuario> listaUsuarios = new ArrayList<>();
     public DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
+    public List<CabeceraFactura> listaFacturas = new ArrayList<>();
     public List<Boleto> listaBoletos = new ArrayList<>();
     public int nextBoletoId = 1;
+    public int nextFacturaId = 1;
 
     public Usuario() {
         this.carrito = new ArrayList<>();
@@ -26,12 +28,12 @@ public class Usuario {
         this.listaEventos = new DefaultListModel<>();
     }
 
-    public void agregarCarrito(Factura carritos){
-        carrito.add(carritos);
+    public void agregarCarrito(DetalleFactura detalle) {
+        carrito.add(detalle);
     }
 
-    public void eliminarCarrito(int carritos){
-        carrito.remove(carritos);
+    public void eliminarCarrito(int index) {
+        carrito.remove(index);
     }
 
     public void agregarModeloCarrito(String modeloCarritos){
@@ -49,6 +51,34 @@ public class Usuario {
     public int getNextBoletoId(){
         return nextBoletoId++;
     }
+
+    public int getNextFacturaId(){
+        return nextFacturaId++;
+    }
+
+    public void agregarFactura(CabeceraFactura factura) {
+        listaFacturas.add(factura);
+    }
+
+    public List<CabeceraFactura> getFacturas() {
+        return listaFacturas;
+    }
+
+    public List<CabeceraFactura> getFacturasPorFecha(LocalDate fecha) {
+        List<CabeceraFactura> facturasPorFecha = new ArrayList<>();
+        for (CabeceraFactura factura : listaFacturas) {
+            if (factura.getFechaCompra().equals(fecha)) {
+                facturasPorFecha.add(factura);
+            }
+        }
+        return facturasPorFecha;
+    }
+
+    public List<CabeceraFactura> getListaFacturas() {
+        return listaFacturas;
+    }
+
+
     public Usuario(int idUsuario, String usuario, String nombre, String contra, String direccion, String telefono, String genero) {
         this.idUsuario = idUsuario;
         this.usuario = usuario;
