@@ -440,10 +440,11 @@ public class VentanaEventos {
                 }
 
                 Localidad nuevaLocalidad = new Localidad(nombreLocalidad, nombreButaca, precio, cantidad);
-                evento.listaLocalidades.add(nuevaLocalidad);
+                evento.agregarLocalidad(nuevaLocalidad);
                 actualizarListaLocalidades();
             }
         });
+
 
 
 
@@ -1160,20 +1161,12 @@ public class VentanaEventos {
 
     private void actualizarListaLocalidades() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        Map<String, Integer> localidadesMap = new HashMap<>();
-
-        for (Localidad loc : evento.listaLocalidades) {
+        for (Localidad loc : evento.getListaLocalidades()) {
             listModel.addElement(loc.getNombreLocalidad() + " - " + loc.getNombreButaca() + " - " + loc.getCantidad() + " - $" + loc.getPrecio());
-            localidadesMap.put(loc.getNombreLocalidad(), localidadesMap.getOrDefault(loc.getNombreLocalidad(), 0) + loc.getCantidad());
         }
-
         listaLocalidad.setModel(listModel);
-
-        // Actualizar aforo total por localidad
-        for (Map.Entry<String, Integer> entry : localidadesMap.entrySet()) {
-            System.out.println("Localidad: " + entry.getKey() + ", Total de butacas: " + entry.getValue());
-        }
     }
+
 
 
 
@@ -1251,50 +1244,23 @@ public class VentanaEventos {
             for (Localidad localidad : evento.getListaLocalidades()) {
                 if (localidad.getNombreLocalidad().equalsIgnoreCase(localidadEvento)) {
                     // Limpia los campos antes de llenarlos
-                    generalCheck.setSelected(false);
-                    generalField.setText("");
-                    generalPrecio.setText("");
-                    platinumCheck.setSelected(false);
-                    platinumField.setText("");
-                    platinumPrecio.setText("");
-                    vipCheck.setSelected(false);
-                    vipField.setText("");
-                    vipPrecio.setText("");
+                    textField9.setText("");
+                    textField10.setText("");
+                    textField11.setText("");
 
                     // Itera sobre los tipos de butaca y llena los campos correspondientes
                     String tipoButaca = localidad.getNombreButaca();
                     int cantidadButaca = localidad.getCantidad();
                     double precioButaca = localidad.getPrecio();
 
-                    switch (tipoButaca) {
-                        case "General":
-                            if (cantidadButaca == 0) {
-                                model.addElement("General - $0.00 - Cantidad disponible: 0 (sold out)");
-                            } else {
-                                model.addElement("General - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
-                            }
-                            break;
-                        case "Platinum":
-                            if (cantidadButaca == 0) {
-                                model.addElement("Platinum - $0.00 - Cantidad disponible: 0 (sold out)");
-                            } else {
-                                model.addElement("Platinum - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
-                            }
-                            break;
-                        case "VIP":
-                            if (cantidadButaca == 0) {
-                                model.addElement("VIP - $0.00 - Cantidad disponible: 0 (sold out)");
-                            } else {
-                                model.addElement("VIP - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
-                            }
-                            break;
-                    }
+                    model.addElement(tipoButaca + " - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
                 }
             }
         }
 
         comboBox4.setModel(model);
     }
+
 
 
 
