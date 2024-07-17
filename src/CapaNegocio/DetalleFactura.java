@@ -5,6 +5,7 @@ public class DetalleFactura {
     private String tipoAsiento;
     private int cantidad;
     private double precio;
+    private Boleto boleto;
 
     public DetalleFactura(Evento evento, String tipoAsiento, int cantidad, double precio) {
         this.evento = evento;
@@ -43,6 +44,14 @@ public class DetalleFactura {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public Boleto getBoleto() {
+        return boleto;
+    }
+
+    public void setBoleto(Boleto boleto) {
+        this.boleto = boleto;
     }
 
     @Override

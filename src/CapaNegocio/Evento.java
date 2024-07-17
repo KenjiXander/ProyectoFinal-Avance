@@ -172,7 +172,7 @@ public class Evento {
         return artistaEvento;
     }
 
-    public void setArtistaEvento(String artista) {
+    public void setArtistaEvento(String artistaEvento) {
         this.artistaEvento = artistaEvento;
     }
 

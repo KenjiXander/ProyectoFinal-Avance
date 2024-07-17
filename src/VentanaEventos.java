@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import CapaEstructuras.Lista;
 import CapaNegocio.*;
@@ -77,7 +79,6 @@ public class VentanaEventos {
     private JComboBox localidadEventoCombo;
     private JSpinner aforoEvento;
     private JButton modificarLocalidadButton;
-    private JSpinner spinnerLocalidad;
     private JComboBox artistaCombo;
     private JCheckBox generalCheck;
     private JCheckBox platinumCheck;
@@ -124,11 +125,16 @@ public class VentanaEventos {
     private JComboBox comboBox3;
     private JButton buscarPorUsuarioButton;
     private JList list3;
+    private JTextField textField9;
+    private JTextField textField10;
+    private JTextField textField11;
 
     private Evento evento = new Evento();
     private Usuario usuario = new Usuario();
     private Lista lista = new Lista();
     Navegar navegar = new Navegar(usuario.listaEventos);
+    Lista list = new Lista();
+
 
 
     private int contadorId = 1;
@@ -144,15 +150,18 @@ public class VentanaEventos {
         evento.listaArtistas.add(new Artista("Morat"));
         evento.listaArtistas.add(new Artista("Falling in reverse"));
         evento.listaArtistas.add(new Artista("Nirvana"));
-        evento.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa",1000,true,500,50,true,300,100,true,200,200));
-        evento.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui",2000,true,1500,60,true,300,120,true,200,220));
-        evento.listaLocalidades.add(new Localidad("Paseo San Francisco",500,true,350,50,true,100,100,true,50,200));
+        evento.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", "General", 50.0, 500));
+        evento.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui", "Platinum", 100.0, 300));
+        evento.listaLocalidades.add(new Localidad("Paseo San Francisco", "VIP", 200.0, 50));
+
         Evento eventoMorat = new Evento(1, "Morat en Quito", "Quito", "Estadio Olimpico Atahualpa", "15:30", "15/12/2024", "Pop", 1000, "Morat");
-        eventoMorat.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", 1000, true, 500, 50, true, 300, 100, true, 200, 200));
+        eventoMorat.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", "General", 50.0, 500));
         usuario.listaEventos.addElement(eventoMorat);
+
         Evento eventoFalling = new Evento(2, "Falling in reverse en Quito", "Quito", "Coliseo General Rumiñahui", "11:30", "17/12/2024", "Metal", 2000, "Falling in reverse");
-        eventoFalling.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui", 2000, true, 1500, 50, true, 300, 100, true, 200, 200));
+        eventoFalling.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui", "Platinum", 100.0, 300));
         usuario.listaEventos.addElement(eventoFalling);
+
 
 
         actualizarComboBoxUsuarios();
@@ -418,200 +427,78 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombreLocalidad = nombreLoca.getText();
-                int capacidadLocalidad;
-
-                if (!nombreLocalidad.matches("[a-zA-Z ]+")) {
-                    JOptionPane.showMessageDialog(null, "El nombre de la localidad solo puede contener letras y espacios.");
-                    return;
-                }
+                String nombreButaca = textField9.getText();
+                double precio;
+                int cantidad;
 
                 try {
-                    capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
-                    if (capacidadLocalidad <= 0) {
-                        JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
-                        return;
-                    }
+                    precio = Double.parseDouble(textField10.getText());
+                    cantidad = Integer.parseInt(textField11.getText());
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "La capacidad debe ser un número válido.");
+                    JOptionPane.showMessageDialog(null, "Cantidad y precio deben ser números válidos.");
                     return;
                 }
 
-                boolean general = generalCheck.isSelected();
-                int generalCantidad;
-                double generalPrecioValor;
-                if (general) {
-                    try {
-                        generalCantidad = Integer.parseInt(generalField.getText());
-                        generalPrecioValor = Double.parseDouble(generalPrecio.getText());
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca general deben ser números válidos.");
-                        return;
-                    }
-                } else {
-                    generalCantidad = 0;
-                    generalPrecioValor = 0.0;
-                }
-
-                boolean platinum = platinumCheck.isSelected();
-                int platinumCantidad;
-                double platinumPrecioValor;
-                if (platinum) {
-                    try {
-                        platinumCantidad = Integer.parseInt(platinumField.getText());
-                        platinumPrecioValor = Double.parseDouble(platinumPrecio.getText());
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca platinum deben ser números válidos.");
-                        return;
-                    }
-                } else {
-                    platinumCantidad = 0;
-                    platinumPrecioValor = 0.0;
-                }
-
-                boolean vip = vipCheck.isSelected();
-                int vipCantidad;
-                double vipPrecioValor;
-                if (vip) {
-                    try {
-                        vipCantidad = Integer.parseInt(vipField.getText());
-                        vipPrecioValor = Double.parseDouble(vipPrecio.getText());
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca VIP deben ser números válidos.");
-                        return;
-                    }
-                } else {
-                    vipCantidad = 0;
-                    vipPrecioValor = 0.0;
-                }
-
-                for (Localidad loc : evento.listaLocalidades) {
-                    if (loc.getNombreLocalidad().equalsIgnoreCase(nombreLocalidad)) {
-                        JOptionPane.showMessageDialog(null, "Ya existe una localidad con ese nombre.");
-                        return;
-                    }
-                }
-
-                Localidad nuevaLocalidad = new Localidad(nombreLocalidad, capacidadLocalidad, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
-                evento.agregarLocalidad(nuevaLocalidad);
+                Localidad nuevaLocalidad = new Localidad(nombreLocalidad, nombreButaca, precio, cantidad);
+                evento.listaLocalidades.add(nuevaLocalidad);
                 actualizarListaLocalidades();
-                limpiarCamposLocalidad();
-                actualizarComboBoxLocalidades();
             }
         });
+
+
+
 
         listaLocalidad.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = listaLocalidad.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
-                    Localidad localidadSeleccionada = evento.listaLocalidades.get(indiceSeleccionado);
-                    nombreLoca.setText(localidadSeleccionada.getNombreLocalidad());
-                    spinnerLocalidad.setValue(localidadSeleccionada.getCapacidadLocalidad());
+                    String selectedValue = listaLocalidad.getSelectedValue().toString();
+                    String[] parts = selectedValue.split(" - ");
+                    String nombreLocalidad = parts[0];
+                    String nombreButaca = parts[1];
 
-                    generalCheck.setSelected(localidadSeleccionada.getGeneralCantidad() > 0);
-                    generalField.setText(String.valueOf(localidadSeleccionada.getGeneralCantidad()));
-                    generalPrecio.setText(String.valueOf(localidadSeleccionada.getGeneralPrecio()));
-
-                    platinumCheck.setSelected(localidadSeleccionada.getPlatinumCantidad() > 0);
-                    platinumField.setText(String.valueOf(localidadSeleccionada.getPlatinumCantidad()));
-                    platinumPrecio.setText(String.valueOf(localidadSeleccionada.getPlatinumPrecio()));
-
-                    vipCheck.setSelected(localidadSeleccionada.getVipCantidad() > 0);
-                    vipField.setText(String.valueOf(localidadSeleccionada.getVipCantidad()));
-                    vipPrecio.setText(String.valueOf(localidadSeleccionada.getVipPrecio()));
+                    for (Localidad loc : evento.listaLocalidades) {
+                        if (loc.getNombreLocalidad().equals(nombreLocalidad) && loc.getNombreButaca().equals(nombreButaca)) {
+                            nombreLoca.setText(loc.getNombreLocalidad());
+                            textField9.setText(loc.getNombreButaca());
+                            textField10.setText(String.valueOf(loc.getPrecio()));
+                            textField11.setText(String.valueOf(loc.getCantidad()));
+                            break;
+                        }
+                    }
                 }
             }
         });
+
+
+        // Este código se encuentra en el listener del botón modificarLocalidadButton
+
         modificarLocalidadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = listaLocalidad.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
-                    String nombreLocalidad = nombreLoca.getText();
-                    int capacidadLocalidad;
+                    String selectedValue = listaLocalidad.getSelectedValue().toString();
+                    String[] parts = selectedValue.split(" - ");
+                    String nombreLocalidad = parts[0];
+                    String nombreButaca = parts[1];
 
-                    if (!nombreLocalidad.matches("[a-zA-Z ]+")) {
-                        JOptionPane.showMessageDialog(null, "El nombre de la localidad solo puede contener letras y espacios.");
-                        return;
-                    }
-
-                    try {
-                        capacidadLocalidad = Integer.parseInt(spinnerLocalidad.getValue().toString());
-                        if (capacidadLocalidad <= 0) {
-                            JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
-                            return;
+                    for (Localidad loc : evento.listaLocalidades) {
+                        if (loc.getNombreLocalidad().equals(nombreLocalidad) && loc.getNombreButaca().equals(nombreButaca)) {
+                            loc.setNombreLocalidad(nombreLoca.getText());
+                            loc.setNombreButaca(textField9.getText());
+                            loc.setPrecio(Double.parseDouble(textField10.getText()));
+                            loc.setCantidad(Integer.parseInt(textField11.getText()));
+                            break;
                         }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "La capacidad debe ser un número válido.");
-                        return;
                     }
 
-                    boolean general = generalCheck.isSelected();
-                    int generalCantidad;
-                    double generalPrecioValor;
-                    if (general) {
-                        try {
-                            generalCantidad = Integer.parseInt(generalField.getText());
-                            generalPrecioValor = Double.parseDouble(generalPrecio.getText());
-                        } catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca general deben ser números válidos.");
-                            return;
-                        }
-                    } else {
-                        generalCantidad = 0;
-                        generalPrecioValor = 0.0;
-                    }
-
-                    boolean platinum = platinumCheck.isSelected();
-                    int platinumCantidad;
-                    double platinumPrecioValor;
-                    if (platinum) {
-                        try {
-                            platinumCantidad = Integer.parseInt(platinumField.getText());
-                            platinumPrecioValor = Double.parseDouble(platinumPrecio.getText());
-                        } catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca platinum deben ser números válidos.");
-                            return;
-                        }
-                    } else {
-                        platinumCantidad = 0;
-                        platinumPrecioValor = 0.0;
-                    }
-
-                    boolean vip = vipCheck.isSelected();
-                    int vipCantidad;
-                    double vipPrecioValor;
-                    if (vip) {
-                        try {
-                            vipCantidad = Integer.parseInt(vipField.getText());
-                            vipPrecioValor = Double.parseDouble(vipPrecio.getText());
-                        } catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(null, "La cantidad y el precio de la butaca VIP deben ser números válidos.");
-                            return;
-                        }
-                    } else {
-                        vipCantidad = 0;
-                        vipPrecioValor = 0.0;
-                    }
-
-                    Localidad localidadModificada = new Localidad(nombreLocalidad, capacidadLocalidad, general, generalCantidad, generalPrecioValor, platinum, platinumCantidad, platinumPrecioValor, vip, vipCantidad, vipPrecioValor);
-                    evento.listaLocalidades.set(indiceSeleccionado, localidadModificada);
                     actualizarListaLocalidades();
-                    limpiarCamposLocalidad();
                 }
             }
         });
 
-        spinnerLocalidad.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int valorActual = (int) spinnerLocalidad.getValue();
-                if (valorActual <= 0) {
-                    JOptionPane.showMessageDialog(null, "La capacidad debe ser un número positivo.");
-                    SwingUtilities.invokeLater(() -> spinnerLocalidad.setValue(1));
-                }
-            }
-        });
 
         localidadEventoCombo.addActionListener(new ActionListener() {
             @Override
@@ -619,12 +506,13 @@ public class VentanaEventos {
                 String nombreSeleccionado = (String) localidadEventoCombo.getSelectedItem();
                 for (Localidad loc : evento.listaLocalidades) {
                     if (loc.getNombreLocalidad().equals(nombreSeleccionado)) {
-                        aforoEvento.setValue(loc.getCapacidadLocalidad());
+                        aforoEvento.setValue(loc.getCantidad());
                         break;
                     }
                 }
             }
         });
+
         agregarEventoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -693,20 +581,12 @@ public class VentanaEventos {
                         return;
                     }
 
-                    Localidad localidadSeleccionada = null;
+                    int totalButacas = 0;
                     for (Localidad loc : evento.listaLocalidades) {
                         if (loc.getNombreLocalidad().equals(localidad)) {
-                            localidadSeleccionada = loc;
-                            break;
+                            totalButacas += loc.getCantidad();
                         }
                     }
-
-                    if (localidadSeleccionada == null) {
-                        JOptionPane.showMessageDialog(null, "La localidad seleccionada no es válida.");
-                        return;
-                    }
-
-                    int totalButacas = localidadSeleccionada.getGeneralCantidad() + localidadSeleccionada.getPlatinumCantidad() + localidadSeleccionada.getVipCantidad();
 
                     if (totalButacas != aforo) {
                         JOptionPane.showMessageDialog(null, "Debes asignar todos los asientos disponibles sin pasarte del total.");
@@ -726,7 +606,12 @@ public class VentanaEventos {
                     }
 
                     Evento eventoAgregar = new Evento(id, nombre, ciudad, localidad, hora, fecha, genero, aforo, artista);
-                    eventoAgregar.listaLocalidades.add(localidadSeleccionada);
+                    for (Localidad loc : evento.listaLocalidades) {
+                        if (loc.getNombreLocalidad().equals(localidad)) {
+                            eventoAgregar.listaLocalidades.add(loc);
+                        }
+                    }
+
                     usuario.agregarEventoGestionado(eventoAgregar);
                     list4.setModel(usuario.listaEventos);
                     list7.setModel(usuario.listaEventos);
@@ -737,6 +622,8 @@ public class VentanaEventos {
                 }
             }
         });
+
+
 
 
         list7.addMouseListener(new MouseAdapter() {
@@ -762,7 +649,7 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list8.getSelectedIndex();
                 if(indiceSeleccionado != -1){
-                    usuario.eliminarCarrito(indiceSeleccionado);
+                    list.carrito.remove(indiceSeleccionado);
                     actualizarCarrito();
                 }
             }
@@ -770,22 +657,20 @@ public class VentanaEventos {
         comprarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (usuario.carrito.isEmpty()) {
+                if (list.carrito.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Debes seleccionar al menos una entrada antes de comprar.");
                     return;
                 }
                 generarFactura();
                 Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
-                for (DetalleFactura item : usuario.carrito) {
+                for (DetalleFactura item : list.carrito) {
                     agregarBoleto(item, eventoSeleccionado);
+                    actualizarCantidadEntradas(eventoSeleccionado, item);
                 }
+                actualizarComboBox4(eventoSeleccionado);
+                limpiarCarrito();
             }
         });
-
-
-
-
-
 
 
         buscarPorNombreButton.addActionListener(new ActionListener() {
@@ -901,30 +786,28 @@ public class VentanaEventos {
                     aforoEvento.setValue(eventoSeleccionado.getAforoEvento());
                     artistaCombo.setSelectedItem(eventoSeleccionado.getArtistaEvento());
 
-                    Localidad localidadSeleccionada = null;
-                    for (Localidad loc : eventoSeleccionado.listaLocalidades) {
+                    // Limpiar campos de butacas
+                    textField9.setText("");
+                    textField10.setText("");
+                    textField11.setText("");
+
+                    // Llenar los campos de butacas
+                    for (Localidad loc : eventoSeleccionado.getListaLocalidades()) {
                         if (loc.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
-                            localidadSeleccionada = loc;
+                            nombreLoca.setText(loc.getNombreLocalidad());
+                            textField9.setText(loc.getNombreButaca());
+                            textField10.setText(String.valueOf(loc.getPrecio()));
+                            textField11.setText(String.valueOf(loc.getCantidad()));
                             break;
                         }
-                    }
-
-                    if (localidadSeleccionada != null) {
-                        generalCheck.setSelected(localidadSeleccionada.isGeneral());
-                        generalField.setText(String.valueOf(localidadSeleccionada.getGeneralCantidad()));
-                        generalPrecio.setText(String.valueOf(localidadSeleccionada.getGeneralPrecio()));
-                        platinumCheck.setSelected(localidadSeleccionada.isPlatinum());
-                        platinumField.setText(String.valueOf(localidadSeleccionada.getPlatinumCantidad()));
-                        platinumPrecio.setText(String.valueOf(localidadSeleccionada.getPlatinumPrecio()));
-                        vipCheck.setSelected(localidadSeleccionada.isVip());
-                        vipField.setText(String.valueOf(localidadSeleccionada.getVipCantidad()));
-                        vipPrecio.setText(String.valueOf(localidadSeleccionada.getVipPrecio()));
                     }
 
                     actualizarComboBox4(eventoSeleccionado);
                 }
             }
         });
+
+
 
         modificarEventoButton.addActionListener(new ActionListener() {
             @Override
@@ -995,8 +878,9 @@ public class VentanaEventos {
                         return;
                     }
 
+                    // Encuentra la localidad seleccionada
                     Localidad localidadSeleccionada = null;
-                    for (Localidad loc : evento.listaLocalidades) {
+                    for (Localidad loc : eventoSeleccionado.getListaLocalidades()) {
                         if (loc.getNombreLocalidad().equals(nuevaLocalidad)) {
                             localidadSeleccionada = loc;
                             break;
@@ -1008,21 +892,7 @@ public class VentanaEventos {
                         return;
                     }
 
-                    int totalButacas = localidadSeleccionada.getGeneralCantidad() + localidadSeleccionada.getPlatinumCantidad() + localidadSeleccionada.getVipCantidad();
-
-                    if (totalButacas != nuevoAforo) {
-                        JOptionPane.showMessageDialog(null, "Debes asignar todos los asientos disponibles sin pasarte del total.");
-                        return;
-                    }
-
-                    for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
-                        Evento eventoExistente = usuario.listaEventos.getElementAt(i);
-                        if (i != indiceSeleccionado && (eventoExistente.getNombreEvento().equalsIgnoreCase(nuevoNombre) || eventoExistente.getFechaEvento().equals(nuevaFecha))) {
-                            JOptionPane.showMessageDialog(null, "Ya existe un evento con ese nombre o fecha.");
-                            return;
-                        }
-                    }
-
+                    // Actualiza los datos del evento seleccionado
                     eventoSeleccionado.setNombreEvento(nuevoNombre);
                     eventoSeleccionado.setCiudadEvento(nuevaCiudad);
                     eventoSeleccionado.setLocalidadEvento(nuevaLocalidad);
@@ -1032,16 +902,18 @@ public class VentanaEventos {
                     eventoSeleccionado.setAforoEvento(nuevoAforo);
                     eventoSeleccionado.setArtistaEvento(nuevoArtista);
 
-                    Localidad localidadModificada = new Localidad(nuevaLocalidad, localidadSeleccionada.getCapacidadLocalidad(), localidadSeleccionada.isGeneral(), localidadSeleccionada.getGeneralCantidad(), localidadSeleccionada.getGeneralPrecio(), localidadSeleccionada.isPlatinum(), localidadSeleccionada.getPlatinumCantidad(), localidadSeleccionada.getPlatinumPrecio(), localidadSeleccionada.isVip(), localidadSeleccionada.getVipCantidad(), localidadSeleccionada.getVipPrecio());
-                    eventoSeleccionado.getListaLocalidades().clear();
-                    eventoSeleccionado.getListaLocalidades().add(localidadModificada);
+                    // Actualiza la localidad seleccionada
+                    localidadSeleccionada.setNombreLocalidad(nuevaLocalidad);
+                    localidadSeleccionada.setNombreButaca(textField9.getText());
+                    localidadSeleccionada.setPrecio(Double.parseDouble(textField10.getText()));
+                    localidadSeleccionada.setCantidad(Integer.parseInt(textField11.getText()));
 
-                    usuario.listaEventos.set(indiceSeleccionado, eventoSeleccionado);
                     JOptionPane.showMessageDialog(null, "Se ha modificado el evento");
                     list4.repaint();
                 }
             }
         });
+
 
 
 
@@ -1220,7 +1092,7 @@ public class VentanaEventos {
 
     private void generarFactura() {
         double totalAPagar = 0.0;
-        List<DetalleFactura> detalles = new ArrayList<>(usuario.carrito);
+        List<DetalleFactura> detalles = new ArrayList<>(list.carrito);
 
         for (DetalleFactura item : detalles) {
             totalAPagar += item.getPrecio() * item.getCantidad();
@@ -1287,26 +1159,31 @@ public class VentanaEventos {
     }
 
     private void actualizarListaLocalidades() {
-        DefaultListModel<Localidad> listModel = new DefaultListModel<>();
-        for (Localidad localidad : evento.listaLocalidades) {
-            listModel.addElement(localidad);
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        Map<String, Integer> localidadesMap = new HashMap<>();
+
+        for (Localidad loc : evento.listaLocalidades) {
+            listModel.addElement(loc.getNombreLocalidad() + " - " + loc.getNombreButaca() + " - " + loc.getCantidad() + " - $" + loc.getPrecio());
+            localidadesMap.put(loc.getNombreLocalidad(), localidadesMap.getOrDefault(loc.getNombreLocalidad(), 0) + loc.getCantidad());
         }
+
         listaLocalidad.setModel(listModel);
+
+        // Actualizar aforo total por localidad
+        for (Map.Entry<String, Integer> entry : localidadesMap.entrySet()) {
+            System.out.println("Localidad: " + entry.getKey() + ", Total de butacas: " + entry.getValue());
+        }
     }
 
-    private void limpiarCamposLocalidad(){
+
+
+    private void limpiarCamposLocalidad() {
         nombreLoca.setText("");
-        spinnerLocalidad.setValue(0);
-        generalCheck.setSelected(false);
-        generalField.setText("");
-        generalPrecio.setText("");
-        platinumCheck.setSelected(false);
-        platinumField.setText("");
-        platinumPrecio.setText("");
-        vipCheck.setSelected(false);
-        vipField.setText("");
-        vipPrecio.setText("");
+        textField9.setText("");
+        textField10.setText("");
+        textField11.setText("");
     }
+
 
     private void limpiarCamposArtistas(){
         textField18.setText("");
@@ -1373,34 +1250,53 @@ public class VentanaEventos {
             String localidadEvento = evento.getLocalidadEvento();
             for (Localidad localidad : evento.getListaLocalidades()) {
                 if (localidad.getNombreLocalidad().equalsIgnoreCase(localidadEvento)) {
-                    if (localidad.isGeneral()) {
-                        if (localidad.getGeneralCantidad() == 0) {
-                            model.addElement("General - $0.00 - Cantidad disponible: 0 (sold out)");
-                        } else {
-                            model.addElement("General - $" + localidad.getGeneralPrecio() + " - Cantidad disponible: " + localidad.getGeneralCantidad());
-                        }
+                    // Limpia los campos antes de llenarlos
+                    generalCheck.setSelected(false);
+                    generalField.setText("");
+                    generalPrecio.setText("");
+                    platinumCheck.setSelected(false);
+                    platinumField.setText("");
+                    platinumPrecio.setText("");
+                    vipCheck.setSelected(false);
+                    vipField.setText("");
+                    vipPrecio.setText("");
+
+                    // Itera sobre los tipos de butaca y llena los campos correspondientes
+                    String tipoButaca = localidad.getNombreButaca();
+                    int cantidadButaca = localidad.getCantidad();
+                    double precioButaca = localidad.getPrecio();
+
+                    switch (tipoButaca) {
+                        case "General":
+                            if (cantidadButaca == 0) {
+                                model.addElement("General - $0.00 - Cantidad disponible: 0 (sold out)");
+                            } else {
+                                model.addElement("General - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
+                            }
+                            break;
+                        case "Platinum":
+                            if (cantidadButaca == 0) {
+                                model.addElement("Platinum - $0.00 - Cantidad disponible: 0 (sold out)");
+                            } else {
+                                model.addElement("Platinum - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
+                            }
+                            break;
+                        case "VIP":
+                            if (cantidadButaca == 0) {
+                                model.addElement("VIP - $0.00 - Cantidad disponible: 0 (sold out)");
+                            } else {
+                                model.addElement("VIP - $" + precioButaca + " - Cantidad disponible: " + cantidadButaca);
+                            }
+                            break;
                     }
-                    if (localidad.isPlatinum()) {
-                        if (localidad.getPlatinumCantidad() == 0) {
-                            model.addElement("Platinum - $0.00 - Cantidad disponible: 0 (sold out)");
-                        } else {
-                            model.addElement("Platinum - $" + localidad.getPlatinumPrecio() + " - Cantidad disponible: " + localidad.getPlatinumCantidad());
-                        }
-                    }
-                    if (localidad.isVip()) {
-                        if (localidad.getVipCantidad() == 0) {
-                            model.addElement("VIP - $0.00 - Cantidad disponible: 0 (sold out)");
-                        } else {
-                            model.addElement("VIP - $" + localidad.getVipPrecio() + " - Cantidad disponible: " + localidad.getVipCantidad());
-                        }
-                    }
-                    break;
                 }
             }
         }
 
         comboBox4.setModel(model);
     }
+
+
 
 
     private void agregarEntradaAlCarrito() {
@@ -1424,32 +1320,33 @@ public class VentanaEventos {
         String tipoButaca = partes[0] + " - $" + String.format("%.2f", precio);
         Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
         DetalleFactura detalle = new DetalleFactura(eventoSeleccionado, tipoButaca, cantidad, precio);
-        usuario.agregarCarrito(detalle);
+
+        list.carrito.add(detalle);
         actualizarCarrito();
     }
 
 
     private void actualizarCarrito() {
-        usuario.modeloCarrito.clear();
+        lista.modeloCarrito.clear();
         double total = 0.0;
 
-        for (DetalleFactura entrada : usuario.carrito) {
+        for (DetalleFactura entrada : list.carrito) {
             String tipoEntrada = entrada.getTipoAsiento();
             int cantidad = entrada.getCantidad();
             String item = tipoEntrada + " x" + cantidad;
-            usuario.agregarModeloCarrito(item);
+            lista.modeloCarrito.addElement(item);
             total += cantidad * entrada.getPrecio();
         }
 
-        list8.setModel(usuario.modeloCarrito);
+        list8.setModel(lista.modeloCarrito);
         textField19.setText(String.format("%.2f", total));
     }
 
 
 
     private void limpiarCarrito(){
-        usuario.modeloCarrito.clear();
-        usuario.carrito.clear();
+        lista.modeloCarrito.clear();
+        list.carrito.clear();
         textField19.setText("");
     }
 
@@ -1462,12 +1359,9 @@ public class VentanaEventos {
     private void agregarBoleto(DetalleFactura detalle, Evento eventoSeleccionado) {
         int idBoleto = usuario.getNextBoletoId();
         Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), detalle);
-        usuario.agregarBoleto(boleto);
+        list.listaBoletos.add(boleto);
         System.out.println("Boleto agregado: " + boleto.toString());
     }
-
-
-
 
     private void limpiarNavegacion(){
         DefaultListModel<Evento> listaVacia = new DefaultListModel<>();
@@ -1606,6 +1500,35 @@ public class VentanaEventos {
             model.addElement(user.getUsuario());
         }
         comboBox3.setModel(model);
+    }
+
+    private void actualizarCantidadEntradas(Evento evento, DetalleFactura item) {
+        String tipoAsiento = item.getTipoAsiento();
+        int cantidadComprada = item.getCantidad();
+
+        for (Localidad localidad : evento.getListaLocalidades()) {
+            if (localidad.getNombreLocalidad().equals(evento.getLocalidadEvento())) {
+                if (localidad.getNombreButaca().equalsIgnoreCase(tipoAsiento)) {
+                    int nuevaCantidad = localidad.getCantidad() - cantidadComprada;
+                    localidad.setCantidad(nuevaCantidad);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    private void agregarButacaALocalidad(String nombreLocalidad, String nombreButaca, double precio, int cantidad) {
+        for (Localidad localidad : evento.listaLocalidades) {
+            if (localidad.getNombreLocalidad().equals(nombreLocalidad)) {
+                localidad.setCantidad(localidad.getCantidad() + cantidad);
+                localidad.setPrecio(precio); // Asignar el precio de la última butaca agregada
+                localidad.setNombreButaca(nombreButaca);
+                return;
+            }
+        }
+        Localidad nuevaLocalidad = new Localidad(nombreLocalidad, nombreButaca, precio, cantidad);
+        evento.listaLocalidades.add(nuevaLocalidad);
     }
 
 

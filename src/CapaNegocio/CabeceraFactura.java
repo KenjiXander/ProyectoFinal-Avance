@@ -8,14 +8,14 @@ public class CabeceraFactura {
     private Usuario usuario;
     private LocalDate fechaCompra;
     private double total;
-    private List<DetalleFactura> detalles;
+    private List<DetalleFactura> listaDetalles;
 
     public CabeceraFactura(int idFactura, Usuario usuario, LocalDate fechaCompra, double total, List<DetalleFactura> detalles) {
         this.idFactura = idFactura;
         this.usuario = usuario;
         this.fechaCompra = fechaCompra;
         this.total = total;
-        this.detalles = detalles;
+        this.listaDetalles = detalles;
     }
 
     public int getIdFactura() {
@@ -50,12 +50,12 @@ public class CabeceraFactura {
         this.total = total;
     }
 
-    public List<DetalleFactura> getDetalles() {
-        return detalles;
+    public List<DetalleFactura> getListaDetalles() {
+        return listaDetalles;
     }
 
-    public void setDetalles(List<DetalleFactura> detalles) {
-        this.detalles = detalles;
+    public void setListaDetalles(List<DetalleFactura> listaDetalles) {
+        this.listaDetalles = listaDetalles;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CabeceraFactura {
         facturaString.append("Fecha de Compra: ").append(fechaCompra).append("\n\n");
 
         facturaString.append("Detalles de la Compra:\n");
-        for (DetalleFactura detalle : detalles) {
+        for (DetalleFactura detalle : listaDetalles) {
             facturaString.append(detalle.toString()).append("\n");
         }
 
