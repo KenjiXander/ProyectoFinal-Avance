@@ -4,16 +4,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import CapaEstructuras.Lista;
+import CapaEstructuras.ListaBoleto;
+import CapaEstructuras.ListaCarrito;
+import CapaEstructuras.ListaUsuarios;
 import CapaNegocio.*;
 import CapaEstructuras.Navegar;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class VentanaEventos {
     private JTabbedPane registroPanel;
@@ -129,11 +126,11 @@ public class VentanaEventos {
     private JTextField textField10;
     private JTextField textField11;
 
-    private Evento evento = new Evento();
-    private Usuario usuario = new Usuario();
-    private Lista lista = new Lista();
-    Navegar navegar = new Navegar(usuario.listaEventos);
-    Lista list = new Lista();
+    private ListaUsuarios userlist = new ListaUsuarios();
+    private DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
+    public DefaultListModel<String> modeloCarrito = new DefaultListModel<>();
+    private ListaCarrito carrilista = new ListaCarrito();
+    Navegar navegar = new Navegar(listaEventos);
 
 
 
@@ -141,12 +138,13 @@ public class VentanaEventos {
     private Usuario usuarioActual = null;
 
     public VentanaEventos() {
+        Evento evento = new Evento();
 
-        lista.listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
-        lista.listaUsuarios.add(new Usuario(1, "ray", "Ray", "ray", "direccion", "099485124", "Masculino"));
-        lista.listaUsuarios.add(new Usuario(2, "richi", "Richi", "richi", "direccion", "099485124", "Masculino"));
-        lista.listaUsuarios.add(new Usuario(3, "mati", "Mati", "mati", "direccion", "099485124", "Masculino"));
-        lista.listaUsuarios.add(new Usuario(4, "kenji", "Kenji", "kenji", "direccion", "099485124", "Masculino"));
+        userlist.listaUsuarios.add(new Usuario(0, "admin", "Administrador", "admin", "direccion", "099485124", "Masculino"));
+        userlist.listaUsuarios.add(new Usuario(1, "ray", "Ray", "ray", "direccion", "099485124", "Masculino"));
+        userlist.listaUsuarios.add(new Usuario(2, "richi", "Richi", "richi", "direccion", "099485124", "Masculino"));
+        userlist.listaUsuarios.add(new Usuario(3, "mati", "Mati", "mati", "direccion", "099485124", "Masculino"));
+        userlist.listaUsuarios.add(new Usuario(4, "kenji", "Kenji", "kenji", "direccion", "099485124", "Masculino"));
         evento.listaArtistas.add(new Artista("Morat"));
         evento.listaArtistas.add(new Artista("Falling in reverse"));
         evento.listaArtistas.add(new Artista("Nirvana"));
@@ -156,11 +154,11 @@ public class VentanaEventos {
 
         Evento eventoMorat = new Evento(1, "Morat en Quito", "Quito", "Estadio Olimpico Atahualpa", "15:30", "15/12/2024", "Pop", 1000, "Morat");
         eventoMorat.listaLocalidades.add(new Localidad("Estadio Olimpico Atahualpa", "General", 50.0, 500));
-        usuario.listaEventos.addElement(eventoMorat);
+        listaEventos.addElement(eventoMorat);
 
         Evento eventoFalling = new Evento(2, "Falling in reverse en Quito", "Quito", "Coliseo General Rumiñahui", "11:30", "17/12/2024", "Metal", 2000, "Falling in reverse");
         eventoFalling.listaLocalidades.add(new Localidad("Coliseo General Rumiñahui", "Platinum", 100.0, 300));
-        usuario.listaEventos.addElement(eventoFalling);
+        listaEventos.addElement(eventoFalling);
 
 
 
@@ -229,7 +227,7 @@ public class VentanaEventos {
                 }
 
                 boolean usuarioExistente = false;
-                for (Usuario user : lista.listaUsuarios) {
+                for (Usuario user : userlist.listaUsuarios) {
                     if (user.getUsuario().equals(usuarioField)) {
                         usuarioExistente = true;
                         break;
@@ -240,7 +238,7 @@ public class VentanaEventos {
                     JOptionPane.showMessageDialog(null, "El usuario que ingresaste ya se encuentra en el sistema.");
                 } else {
                     Usuario nuevoUsuario = new Usuario(contadorId++, usuarioField, nombre, contra, direccion, telefono, genero);
-                    lista.listaUsuarios.add(nuevoUsuario);
+                    userlist.listaUsuarios.add(nuevoUsuario);
                     JOptionPane.showMessageDialog(null, "Usuario creado exitosamente");
 
                     agregarUsuarioLista();
@@ -286,7 +284,7 @@ public class VentanaEventos {
                 int indiceSeleccionado = list9.getSelectedIndex();
 
                 if(indiceSeleccionado != -1){
-                    Usuario usuarioSeleccionado = lista.listaUsuarios.get(indiceSeleccionado);
+                    Usuario usuarioSeleccionado = userlist.listaUsuarios.get(indiceSeleccionado);
                     textField20.setText(usuarioSeleccionado.getNombre());
                     textField21.setText(usuarioSeleccionado.getUsuario());
                     textField22.setText(usuarioSeleccionado.getContra());
@@ -326,8 +324,8 @@ public class VentanaEventos {
                     }
 
                     boolean usuarioExistente = false;
-                    for (Usuario user : lista.listaUsuarios) {
-                        if (user.getUsuario().equals(usuarioField) && user != lista.listaUsuarios.get(indiceSeleccionado)) {
+                    for (Usuario user : userlist.listaUsuarios) {
+                        if (user.getUsuario().equals(usuarioField) && user != userlist.listaUsuarios.get(indiceSeleccionado)) {
                             usuarioExistente = true;
                             break;
                         }
@@ -338,7 +336,7 @@ public class VentanaEventos {
                         return;
                     }
 
-                    Usuario usuarioSeleccionado = lista.listaUsuarios.get(indiceSeleccionado);
+                    Usuario usuarioSeleccionado = userlist.listaUsuarios.get(indiceSeleccionado);
                     usuarioSeleccionado.setNombre(nombre);
                     usuarioSeleccionado.setUsuario(usuarioField);
                     usuarioSeleccionado.setContra(contra);
@@ -346,7 +344,7 @@ public class VentanaEventos {
                     usuarioSeleccionado.setTelefono(telefono);
                     usuarioSeleccionado.setGenero(genero);
 
-                    list9.setListData(lista.listaUsuarios.toArray(new Usuario[0]));
+                    list9.setListData(userlist.listaUsuarios.toArray(new Usuario[0]));
                 }
             }
         });
@@ -472,9 +470,6 @@ public class VentanaEventos {
             }
         });
 
-
-        // Este código se encuentra en el listener del botón modificarLocalidadButton
-
         modificarLocalidadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -518,6 +513,7 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+
                     int id = Integer.parseInt(idEvento.getText());
                     String nombre = nombreEvento.getText();
                     String ciudad = ciudadEventoCombo.getSelectedItem().toString();
@@ -594,8 +590,8 @@ public class VentanaEventos {
                         return;
                     }
 
-                    for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
-                        Evento eventoExistente = usuario.listaEventos.getElementAt(i);
+                    for (int i = 0; i < listaEventos.getSize(); i++) {
+                        Evento eventoExistente = listaEventos.getElementAt(i);
                         if (eventoExistente.getNombreEvento().equalsIgnoreCase(nombre)) {
                             JOptionPane.showMessageDialog(null, "Ya existe un evento con ese nombre.");
                             return;
@@ -613,10 +609,10 @@ public class VentanaEventos {
                         }
                     }
 
-                    usuario.agregarEventoGestionado(eventoAgregar);
-                    list4.setModel(usuario.listaEventos);
-                    list7.setModel(usuario.listaEventos);
-                    list1.setModel(usuario.listaEventos);
+                    agregarEventoGestionado(eventoAgregar);
+                    list4.setModel(listaEventos);
+                    list7.setModel(listaEventos);
+                    list1.setModel(listaEventos);
                     limpiarAgregarEvento();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar evento");
@@ -632,7 +628,7 @@ public class VentanaEventos {
             public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = list7.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(indiceSeleccionado);
                     actualizarComboBox4(eventoSeleccionado);
                 }
             }
@@ -650,7 +646,7 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list8.getSelectedIndex();
                 if(indiceSeleccionado != -1){
-                    list.carrito.remove(indiceSeleccionado);
+                    carrilista.carrito.remove(indiceSeleccionado);
                     actualizarCarrito();
                 }
             }
@@ -658,13 +654,13 @@ public class VentanaEventos {
         comprarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (list.carrito.isEmpty()) {
+                if (carrilista.carrito.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Debes seleccionar al menos una entrada antes de comprar.");
                     return;
                 }
                 generarFactura();
-                Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
-                for (DetalleFactura item : list.carrito) {
+                Evento eventoSeleccionado = listaEventos.getElementAt(list7.getSelectedIndex());
+                for (DetalleFactura item : carrilista.carrito) {
                     agregarBoleto(item, eventoSeleccionado);
                     actualizarCantidadEntradas(eventoSeleccionado, item);
                 }
@@ -743,7 +739,7 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = list1.getSelectedIndex();
                 if (selectedIndex != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndex);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(selectedIndex);
                     String plataforma = comboBox1.getSelectedItem().toString();
                     int presupuesto = (int) spinner2.getValue();
                     String fechaInicio = textField2.getText();
@@ -776,7 +772,7 @@ public class VentanaEventos {
             public void mouseClicked(MouseEvent e) {
                 int indiceSeleccionado = list4.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(indiceSeleccionado);
                     nombreEvento.setText(eventoSeleccionado.getNombreEvento());
                     idEvento.setText(String.valueOf(eventoSeleccionado.getIdEvento()));
                     horaEvento.setText(eventoSeleccionado.getHoraEvento());
@@ -787,12 +783,10 @@ public class VentanaEventos {
                     aforoEvento.setValue(eventoSeleccionado.getAforoEvento());
                     artistaCombo.setSelectedItem(eventoSeleccionado.getArtistaEvento());
 
-                    // Limpiar campos de butacas
                     textField9.setText("");
                     textField10.setText("");
                     textField11.setText("");
 
-                    // Llenar los campos de butacas
                     for (Localidad loc : eventoSeleccionado.getListaLocalidades()) {
                         if (loc.getNombreLocalidad().equals(eventoSeleccionado.getLocalidadEvento())) {
                             nombreLoca.setText(loc.getNombreLocalidad());
@@ -815,7 +809,7 @@ public class VentanaEventos {
             public void actionPerformed(ActionEvent e) {
                 int indiceSeleccionado = list4.getSelectedIndex();
                 if (indiceSeleccionado != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(indiceSeleccionado);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(indiceSeleccionado);
                     String nuevoNombre = nombreEvento.getText();
                     String nuevaCiudad = ciudadEventoCombo.getSelectedItem().toString();
                     String nuevaLocalidad = localidadEventoCombo.getSelectedItem().toString();
@@ -879,7 +873,6 @@ public class VentanaEventos {
                         return;
                     }
 
-                    // Encuentra la localidad seleccionada
                     Localidad localidadSeleccionada = null;
                     for (Localidad loc : eventoSeleccionado.getListaLocalidades()) {
                         if (loc.getNombreLocalidad().equals(nuevaLocalidad)) {
@@ -893,7 +886,6 @@ public class VentanaEventos {
                         return;
                     }
 
-                    // Actualiza los datos del evento seleccionado
                     eventoSeleccionado.setNombreEvento(nuevoNombre);
                     eventoSeleccionado.setCiudadEvento(nuevaCiudad);
                     eventoSeleccionado.setLocalidadEvento(nuevaLocalidad);
@@ -903,7 +895,6 @@ public class VentanaEventos {
                     eventoSeleccionado.setAforoEvento(nuevoAforo);
                     eventoSeleccionado.setArtistaEvento(nuevoArtista);
 
-                    // Actualiza la localidad seleccionada
                     localidadSeleccionada.setNombreLocalidad(nuevaLocalidad);
                     localidadSeleccionada.setNombreButaca(textField9.getText());
                     localidadSeleccionada.setPrecio(Double.parseDouble(textField10.getText()));
@@ -948,7 +939,7 @@ public class VentanaEventos {
                 int selectedIndexEvento = list1.getSelectedIndex();
                 int selectedIndexPublicidad = list2.getSelectedIndex();
                 if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(selectedIndexEvento);
                     Publicidad publicidadSeleccionada = eventoSeleccionado.getListaPublicidades().get(selectedIndexPublicidad);
                     comboBox1.setSelectedItem(publicidadSeleccionada.getPlataforma());
                     spinner2.setValue(publicidadSeleccionada.getPresupuesto());
@@ -963,7 +954,7 @@ public class VentanaEventos {
             public void mouseClicked(MouseEvent e) {
                 int selectedIndex = list1.getSelectedIndex();
                 if (selectedIndex != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndex);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(selectedIndex);
                     actualizarListaPublicidad(eventoSeleccionado);
                 }
             }
@@ -982,7 +973,7 @@ public class VentanaEventos {
                 int selectedIndexPublicidad = list2.getSelectedIndex();
 
                 if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(selectedIndexEvento);
                     Publicidad publicidadSeleccionada = eventoSeleccionado.getListaPublicidades().get(selectedIndexPublicidad);
 
                     String nuevaPlataforma = comboBox1.getSelectedItem().toString();
@@ -1019,7 +1010,7 @@ public class VentanaEventos {
                 int selectedIndexPublicidad = list2.getSelectedIndex();
 
                 if (selectedIndexEvento != -1 && selectedIndexPublicidad != -1) {
-                    Evento eventoSeleccionado = usuario.listaEventos.getElementAt(selectedIndexEvento);
+                    Evento eventoSeleccionado = listaEventos.getElementAt(selectedIndexEvento);
                     eventoSeleccionado.getListaPublicidades().remove(selectedIndexPublicidad);
                     actualizarListaPublicidad(eventoSeleccionado);
                     limpiarCamposPublicidad();
@@ -1033,8 +1024,8 @@ public class VentanaEventos {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = list4.getSelectedIndex();
-                evento.eliminarEvento(selectedIndex, usuario.listaEventos);
-                evento.actualizarListaEventos(list4, usuario.listaEventos);
+                evento.eliminarEvento(selectedIndex, listaEventos);
+                evento.actualizarListaEventos(list4, listaEventos);
             }
         });
         eliminarArtistaButton.addActionListener(new ActionListener() {
@@ -1092,8 +1083,9 @@ public class VentanaEventos {
     }
 
     private void generarFactura() {
+        Usuario usuario = new Usuario();
         double totalAPagar = 0.0;
-        List<DetalleFactura> detalles = new ArrayList<>(list.carrito);
+        List<DetalleFactura> detalles = new ArrayList<>(carrilista.carrito);
 
         for (DetalleFactura item : detalles) {
             totalAPagar += item.getPrecio() * item.getCantidad();
@@ -1108,7 +1100,7 @@ public class VentanaEventos {
 
 
     private void verificarInicioSesion(String usuarioIngresado, String pass, boolean encontrado) {
-        for (Usuario us : lista.listaUsuarios) {
+        for (Usuario us : userlist.listaUsuarios) {
             if (us.getUsuario().equals(usuarioIngresado) && us.getContra().equals(pass)) {
                 encontrado = true;
                 usuarioActual = us;
@@ -1142,16 +1134,17 @@ public class VentanaEventos {
     private void actualizarEventos(){
         DefaultListModel<Evento> model = new DefaultListModel<>();
 
-        for (int i = 0; i < usuario.listaEventos.getSize(); i++) {
-            model.addElement(usuario.listaEventos.getElementAt(i));
+        for (int i = 0; i < listaEventos.getSize(); i++) {
+            model.addElement(listaEventos.getElementAt(i));
         }
-        list4.setModel(usuario.listaEventos);
-        list7.setModel(usuario.listaEventos);
-        list1.setModel(usuario.listaEventos);
+        list4.setModel(listaEventos);
+        list7.setModel(listaEventos);
+        list1.setModel(listaEventos);
     }
 
 
     private void actualizarListaArtistas(){
+        Evento evento = new Evento();
         DefaultListModel<Artista> listModel = new DefaultListModel<>();
         for (Artista artista : evento.listaArtistas) {
             listModel.addElement(artista);
@@ -1160,6 +1153,7 @@ public class VentanaEventos {
     }
 
     private void actualizarListaLocalidades() {
+        Evento evento = new Evento();
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Localidad loc : evento.getListaLocalidades()) {
             listModel.addElement(loc.getNombreLocalidad() + " - " + loc.getNombreButaca() + " - " + loc.getCantidad() + " - $" + loc.getPrecio());
@@ -1185,6 +1179,7 @@ public class VentanaEventos {
 
 
     private void actualizarComboBoxArtistas(){
+        Evento evento = new Evento();
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addElement("Escoger artista...");
         for (Artista artista : evento.listaArtistas) {
@@ -1196,7 +1191,7 @@ public class VentanaEventos {
 
     private void agregarUsuarioLista(){
         DefaultListModel<Usuario> listModel = new DefaultListModel<>();
-        for(Usuario user: lista.listaUsuarios){
+        for(Usuario user: userlist.listaUsuarios){
             listModel.addElement(user);
         }
         list9.setModel(listModel);
@@ -1205,6 +1200,7 @@ public class VentanaEventos {
 
 
     private void actualizarComboBoxLocalidades(){
+        Evento evento = new Evento();
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addElement("Escoger localidad...");
         for (Localidad localidad : evento.listaLocalidades) {
@@ -1243,12 +1239,10 @@ public class VentanaEventos {
             String localidadEvento = evento.getLocalidadEvento();
             for (Localidad localidad : evento.getListaLocalidades()) {
                 if (localidad.getNombreLocalidad().equalsIgnoreCase(localidadEvento)) {
-                    // Limpia los campos antes de llenarlos
                     textField9.setText("");
                     textField10.setText("");
                     textField11.setText("");
 
-                    // Itera sobre los tipos de butaca y llena los campos correspondientes
                     String tipoButaca = localidad.getNombreButaca();
                     int cantidadButaca = localidad.getCantidad();
                     double precioButaca = localidad.getPrecio();
@@ -1284,35 +1278,35 @@ public class VentanaEventos {
         }
 
         String tipoButaca = partes[0] + " - $" + String.format("%.2f", precio);
-        Evento eventoSeleccionado = usuario.listaEventos.getElementAt(list7.getSelectedIndex());
+        Evento eventoSeleccionado = listaEventos.getElementAt(list7.getSelectedIndex());
         DetalleFactura detalle = new DetalleFactura(eventoSeleccionado, tipoButaca, cantidad, precio);
 
-        list.carrito.add(detalle);
+        carrilista.carrito.add(detalle);
         actualizarCarrito();
     }
 
 
     private void actualizarCarrito() {
-        lista.modeloCarrito.clear();
+        modeloCarrito.clear();
         double total = 0.0;
 
-        for (DetalleFactura entrada : list.carrito) {
+        for (DetalleFactura entrada : carrilista.carrito) {
             String tipoEntrada = entrada.getTipoAsiento();
             int cantidad = entrada.getCantidad();
             String item = tipoEntrada + " x" + cantidad;
-            lista.modeloCarrito.addElement(item);
+            modeloCarrito.addElement(item);
             total += cantidad * entrada.getPrecio();
         }
 
-        list8.setModel(lista.modeloCarrito);
+        list8.setModel(modeloCarrito);
         textField19.setText(String.format("%.2f", total));
     }
 
 
 
     private void limpiarCarrito(){
-        lista.modeloCarrito.clear();
-        list.carrito.clear();
+        modeloCarrito.clear();
+        carrilista.carrito.clear();
         textField19.setText("");
     }
 
@@ -1323,9 +1317,11 @@ public class VentanaEventos {
     }
 
     private void agregarBoleto(DetalleFactura detalle, Evento eventoSeleccionado) {
+        ListaBoleto ticket = new ListaBoleto();
+        Usuario usuario = new Usuario();
         int idBoleto = usuario.getNextBoletoId();
         Boleto boleto = new Boleto(idBoleto, usuarioActual.getIdUsuario(), eventoSeleccionado.getIdEvento(), detalle);
-        list.listaBoletos.add(boleto);
+        ticket.listaBoletos.add(boleto);
         System.out.println("Boleto agregado: " + boleto.toString());
     }
 
@@ -1415,7 +1411,7 @@ public class VentanaEventos {
     private Evento getEventoSeleccionado() {
         int selectedIndex = list1.getSelectedIndex();
         if (selectedIndex != -1) {
-            return usuario.listaEventos.getElementAt(selectedIndex);
+            return listaEventos.getElementAt(selectedIndex);
         }
         return null;
     }
@@ -1424,7 +1420,7 @@ public class VentanaEventos {
         int indiceSeleccionado = list9.getSelectedIndex();
 
         if (indiceSeleccionado != -1) {
-            lista.listaUsuarios.remove(indiceSeleccionado);
+            userlist.listaUsuarios.remove(indiceSeleccionado);
 
             DefaultListModel<Usuario> listModel = (DefaultListModel<Usuario>) list9.getModel();
             listModel.remove(indiceSeleccionado);
@@ -1441,6 +1437,7 @@ public class VentanaEventos {
     }
 
     private void buscarFacturasPorFecha() {
+        Usuario usuario = new Usuario();
         String fechaTexto = textField8.getText();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fecha;
@@ -1462,7 +1459,7 @@ public class VentanaEventos {
 
     private void actualizarComboBoxUsuarios() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        for (Usuario user : lista.listaUsuarios) {
+        for (Usuario user : userlist.listaUsuarios) {
             model.addElement(user.getUsuario());
         }
         comboBox3.setModel(model);
@@ -1483,22 +1480,9 @@ public class VentanaEventos {
         }
     }
 
-
-    private void agregarButacaALocalidad(String nombreLocalidad, String nombreButaca, double precio, int cantidad) {
-        for (Localidad localidad : evento.listaLocalidades) {
-            if (localidad.getNombreLocalidad().equals(nombreLocalidad)) {
-                localidad.setCantidad(localidad.getCantidad() + cantidad);
-                localidad.setPrecio(precio); // Asignar el precio de la última butaca agregada
-                localidad.setNombreButaca(nombreButaca);
-                return;
-            }
-        }
-        Localidad nuevaLocalidad = new Localidad(nombreLocalidad, nombreButaca, precio, cantidad);
-        evento.listaLocalidades.add(nuevaLocalidad);
+    public void agregarEventoGestionado(Evento evento){
+        listaEventos.addElement(evento);
     }
-
-
-
 
 
     public static void main(String[] args) {

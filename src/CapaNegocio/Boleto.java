@@ -2,15 +2,11 @@ package CapaNegocio;
 
 public class Boleto {
     private int idBoleto;
-    private int idUsuario;
-    private int idEvento;
     private DetalleFactura detalle;
     private boolean disponible;
 
     public Boleto(int idBoleto, int idUsuario, int idEvento, DetalleFactura detalle) {
         this.idBoleto = idBoleto;
-        this.idUsuario = idUsuario;
-        this.idEvento = idEvento;
         this.detalle = detalle;
         this.disponible = true;
     }
@@ -19,13 +15,6 @@ public class Boleto {
         return idBoleto;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public int getIdEvento() {
-        return idEvento;
-    }
 
     public DetalleFactura getDetalle() {
         return detalle;
@@ -41,6 +30,6 @@ public class Boleto {
 
     @Override
     public String toString() {
-        return "Evento ID: " + idEvento + ", Entrada: " + detalle.getTipoAsiento() + ", Cantidad: " + detalle.getCantidad() + ", Precio: $" + detalle.getPrecio();
+        return "Boleto ID: " + idBoleto + ", Entrada: " + detalle.getTipoAsiento() + ", Cantidad: " + detalle.getCantidad() + ", Precio: $" + detalle.getPrecio();
     }
 }

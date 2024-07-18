@@ -10,6 +10,7 @@ public class Localidad {
     private int cantidad;
     private List<Boleto> listaBoletos;
 
+    //agregar y varios buscar de boleto
     public Localidad(String nombreLocalidad, String nombreButaca, double precio, int cantidad) {
         this.nombreLocalidad = nombreLocalidad;
         this.nombreButaca = nombreButaca;

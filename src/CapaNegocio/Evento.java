@@ -15,11 +15,11 @@ public class Evento {
     private String fechaEvento;
     private String generoMusical;
     private int aforoEvento;
-    private String artistaEvento;
+    private String artistaEvento;//
     public List<Artista> listaArtistas;
     public List<Localidad> listaLocalidades;
     public List<Publicidad> listaPublicidades = new ArrayList<>();
-
+//buscar de las listas
 
     public Evento() {
         this.listaArtistas = new ArrayList<>();
@@ -39,6 +39,9 @@ public class Evento {
         listaPublicidades.add(publicidad);
     }
 
+    public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento){
+
+    }
     public Evento(int idEvento, String nombreEvento, String ciudadEvento, String localidadEvento, String horaEvento, String fechaEvento, String generoMusical, int aforoEvento, String artistaEvento) {
         this.idEvento = idEvento;
         this.nombreEvento = nombreEvento;
@@ -48,7 +51,10 @@ public class Evento {
         this.fechaEvento = fechaEvento;
         this.generoMusical = generoMusical;
         this.aforoEvento = aforoEvento;
-        this.artistaEvento = artistaEvento;
+        //this.artistaEvento = artistaEvento;
+        listaPublicidades = new ArrayList<>();
+        listaArtistas = new ArrayList<>();
+       // agregarArtista(artistaEvento);
         this.listaLocalidades = new ArrayList<>();
     }
 

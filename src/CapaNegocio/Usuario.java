@@ -15,17 +15,13 @@ public class Usuario {
     private String telefono;
     private String genero;
     private List<CabeceraFactura> listaCabeceraFactura = new ArrayList<>();
-    public DefaultListModel<Evento> listaEventos = new DefaultListModel<>();
     public int nextBoletoId = 1;
     public int nextFacturaId = 1;
 
     public Usuario() {
-        this.listaEventos = new DefaultListModel<>();
+       //`   listaCabeceraFactura = new ArrayList<>();
     }
 
-    public void agregarEventoGestionado(Evento evento){
-        listaEventos.addElement(evento);
-    }
 
     public int getNextBoletoId(){
         return nextBoletoId++;
